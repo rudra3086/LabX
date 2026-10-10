@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: smartlab-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: smartlab
+      POSTGRES_PASSWORD: smartlab_dev_password
+      POSTGRES_DB: smartlab
+    ports:
+      - "5433:5432"
+    volumes:
+      - smartlab_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartlab -d smartlab"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  smartlab_pgdata:

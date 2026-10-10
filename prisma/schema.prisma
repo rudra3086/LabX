@@ -1,0 +1,405 @@
+// ============================================================================
+// SmartLab — Prisma schema (source of truth for academic data, spec §50/§155)
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------------------------------------------
+// Enums (consistent terminology per spec §134)
+// ----------------------------------------------------------------------------
+
+enum Role {
+  ADMIN
+  FACULTY
+  STUDENT
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum SubjectStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum SessionStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum TaskStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  ARCHIVED
+}
+
+enum SubmissionStatus {
+  NOT_STARTED
+  DRAFT
+  SUBMITTED
+  LATE
+  GRADED
+  MISSED
+}
+
+enum NotificationType {
+  TASK_CREATED
+  DEADLINE_REMINDER
+  DEADLINE_MISSED
+  SUBMISSION_GRADED
+  GENERAL
+}
+
+// ----------------------------------------------------------------------------
+// Identity
+// ----------------------------------------------------------------------------
+
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  role         Role
+  department   String?
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  student        Student?
+  faculty        Faculty?
+  resources      TaskResource[]     @relation("ResourceUploader")
+  files          SubmissionFile[]   @relation("FileUploader")
+  versions       SubmissionVersion[] @relation("VersionAuthor")
+  gradesGiven    Grade[]            @relation("GradeGrader")
+  gradeAudits    GradeAudit[]       @relation("GradeAuditActor")
+  notifications  Notification[]
+  auditLogs      AuditLog[]         @relation("AuditActor")
+
+  @@index([role])
+  @@index([status])
+}
+
+model Student {
+  id         String     @id @default(cuid())
+  userId     String     @unique
+  studentId  String     @unique // institutional student id
+  rollNumber String     @unique // enrollment / roll number
+  semester   Int
+  department String
+  batch      String?
+  status     UserStatus @default(ACTIVE)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionLinks  SessionStudent[]
+  submissions   Submission[]
+  monthlyReports MonthlyReport[]
+
+  @@index([department])
+  @@index([semester])
+  @@index([batch])
+}
+
+model Faculty {
+  id          String     @id @default(cuid())
+  userId      String     @unique
+  employeeId  String     @unique
+  department  String
+  designation String?
+  status      UserStatus @default(ACTIVE)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignments  FacultySubject[]
+  sessions     PracticalSession[]
+
+  @@index([department])
+}
+
+// ----------------------------------------------------------------------------
+// Academic structure
+// ----------------------------------------------------------------------------
+
+model Subject {
+  id          String        @id @default(cuid())
+  code        String        @unique
+  name        String
+  semester    Int
+  department  String
+  description String?
+  status      SubjectStatus @default(ACTIVE)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  facultyAssignments FacultySubject[]
+  sessions           PracticalSession[]
+
+  @@index([department])
+  @@index([semester])
+}
+
+model FacultySubject {
+  id        String   @id @default(cuid())
+  facultyId String
+  subjectId String
+  createdAt DateTime @default(now())
+
+  faculty Faculty @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([facultyId, subjectId])
+  @@index([subjectId])
+}
+
+model PracticalSession {
+  id          String        @id @default(cuid())
+  subjectId   String
+  facultyId   String
+  name        String
+  description String?
+  semester    Int
+  batch       String?
+  startDate   DateTime?
+  endDate     DateTime?
+  status      SessionStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  subject  Subject          @relation(fields: [subjectId], references: [id], onDelete: Restrict)
+  faculty  Faculty          @relation(fields: [facultyId], references: [id], onDelete: Restrict)
+  students SessionStudent[]
+  tasks    Task[]
+
+  @@index([subjectId])
+  @@index([facultyId])
+  @@index([status])
+}
+
+model SessionStudent {
+  id        String   @id @default(cuid())
+  sessionId String
+  studentId String
+  addedAt   DateTime @default(now())
+
+  session PracticalSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  student Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, studentId])
+  @@index([studentId])
+}
+
+// ----------------------------------------------------------------------------
+// Tasks & reference material
+// ----------------------------------------------------------------------------
+
+model Task {
+  id                    String     @id @default(cuid())
+  sessionId             String
+  title                 String
+  description           String?
+  instructions          String?
+  maximumMarks          Float
+  deadline              DateTime?
+  allowLateSubmission   Boolean    @default(true)
+  allowResubmission     Boolean    @default(false)
+  resubmissionDeadline  DateTime?
+  maxFiles              Int        @default(5)
+  maxFileSizeMb         Int        @default(25)
+  requiredFileTypes     String? // comma-separated list of accepted extensions
+  submissionFormat      String?
+  fileNamingConvention  String?
+  status                TaskStatus @default(DRAFT)
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+
+  session     PracticalSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  resources   TaskResource[]
+  submissions Submission[]
+
+  @@index([sessionId])
+  @@index([deadline])
+  @@index([status])
+}
+
+model TaskResource {
+  id           String   @id @default(cuid())
+  taskId       String
+  title        String
+  originalName String
+  storedName   String
+  mimeType     String
+  sizeBytes    Int
+  storageKey   String
+  uploadedById String
+  createdAt    DateTime @default(now())
+
+  task       Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  uploadedBy User @relation("ResourceUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([taskId])
+}
+
+// ----------------------------------------------------------------------------
+// Submissions, versioning & files
+// ----------------------------------------------------------------------------
+
+model Submission {
+  id          String           @id @default(cuid())
+  taskId      String
+  studentId   String
+  status      SubmissionStatus @default(NOT_STARTED)
+  notes       String?
+  submittedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  task     Task                @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  student  Student             @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  files    SubmissionFile[]
+  versions SubmissionVersion[]
+  grade    Grade?
+
+  @@unique([taskId, studentId])
+  @@index([studentId])
+  @@index([taskId])
+  @@index([status])
+}
+
+model SubmissionVersion {
+  id            String   @id @default(cuid())
+  submissionId  String
+  versionNumber Int
+  notes         String?
+  createdById   String
+  createdAt     DateTime @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  createdBy  User       @relation("VersionAuthor", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@unique([submissionId, versionNumber])
+  @@index([submissionId])
+}
+
+model SubmissionFile {
+  id            String   @id @default(cuid())
+  submissionId  String
+  versionNumber Int      @default(1)
+  originalName  String
+  storedName    String
+  mimeType      String
+  sizeBytes     Int
+  storageKey    String
+  isLatest      Boolean  @default(true)
+  uploadedById  String
+  createdAt     DateTime @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  uploadedBy User       @relation("FileUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([submissionId])
+  @@index([isLatest])
+}
+
+// ----------------------------------------------------------------------------
+// Grading
+// ----------------------------------------------------------------------------
+
+model Grade {
+  id            String   @id @default(cuid())
+  submissionId  String   @unique
+  marks         Float
+  maximumMarks  Float
+  remarks       String?
+  isFinalized   Boolean  @default(false)
+  gradedById    String
+  gradedAt      DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  submission Submission   @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  gradedBy   User         @relation("GradeGrader", fields: [gradedById], references: [id], onDelete: Restrict)
+  audits     GradeAudit[]
+
+  @@index([gradedById])
+}
+
+model GradeAudit {
+  id            String   @id @default(cuid())
+  gradeId       String
+  previousMarks Float?
+  newMarks      Float
+  updatedById   String
+  updatedAt     DateTime @default(now())
+
+  grade     Grade @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+  updatedBy User  @relation("GradeAuditActor", fields: [updatedById], references: [id], onDelete: Restrict)
+
+  @@index([gradeId])
+}
+
+// ----------------------------------------------------------------------------
+// Notifications, reports & audit
+// ----------------------------------------------------------------------------
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+}
+
+model MonthlyReport {
+  id          String   @id @default(cuid())
+  studentId   String
+  year        Int
+  month       Int // 1-12
+  scopeType   String   @default("ALL") // ALL | SUBJECT | SESSION
+  scopeId     String?
+  data        Json?
+  generatedAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, year, month, scopeType, scopeId])
+  @@index([studentId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  entityType String
+  entityId   String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  actor User? @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@index([actorId])
+  @@index([createdAt])
+}
