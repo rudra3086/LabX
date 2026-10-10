@@ -1,4 +1,5 @@
 # dependencies
+PROGRESS.md
 /node_modules
 /.pnp
 .pnp.js

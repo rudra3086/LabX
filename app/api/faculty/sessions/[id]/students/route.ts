@@ -1,0 +1,102 @@
+import { requireRole } from "@/lib/server/rbac";
+import { ApiError, handleApiError, jsonSuccess } from "@/lib/server/http";
+import { prisma } from "@/lib/server/prisma";
+import { recordAudit } from "@/lib/server/audit";
+import { rosterSchema, zodFieldErrors } from "@/lib/schemas";
+import {
+  assertSessionOwnership,
+  getSessionStudents,
+} from "@/lib/server/services/faculty";
+
+export const dynamic = "force-dynamic";
+
+type Ctx = { params: { id: string } };
+
+export async function GET(_req: Request, { params }: Ctx) {
+  try {
+    const faculty = await requireRole("FACULTY");
+    return jsonSuccess({ students: await getSessionStudents(faculty.faculty!.id, params.id) });
+  } catch (err) {
+    return handleApiError(err);
+  }
+}
+
+export async function POST(req: Request, { params }: Ctx) {
+  try {
+    const faculty = await requireRole("FACULTY");
+    const facultyId = faculty.faculty!.id;
+    await assertSessionOwnership(facultyId, params.id);
+
+    const body = await req.json().catch(() => {
+      throw new ApiError("Invalid JSON body.", 400, "INVALID_BODY");
+    });
+    const parsed = rosterSchema.safeParse(body);
+    if (!parsed.success) {
+      throw new ApiError("Validation failed.", 422, "VALIDATION_ERROR", zodFieldErrors(parsed.error));
+    }
+    const { studentIds } = parsed.data;
+
+    // Only enroll existing, active students.
+    const students = await prisma.student.findMany({
+      where: { id: { in: studentIds }, status: "ACTIVE", user: { status: "ACTIVE" } },
+      select: { id: true },
+    });
+    if (students.length === 0) {
+      throw new ApiError("No valid students to add.", 400, "BAD_REQUEST");
+    }
+    const validIds = students.map((s) => s.id);
+
+    await prisma.sessionStudent.createMany({
+      data: validIds.map((studentId) => ({ sessionId: params.id, studentId })),
+      skipDuplicates: true,
+    });
+    await recordAudit({
+      actorId: faculty.id,
+      action: "SESSION_STUDENTS_ADD",
+      entityType: "PracticalSession",
+      entityId: params.id,
+      metadata: { added: validIds },
+    });
+    return jsonSuccess(
+      { students: await getSessionStudents(facultyId, params.id) },
+      `Added ${validIds.length} student${validIds.length === 1 ? "" : "s"} to the session.`
+    );
+  } catch (err) {
+    return handleApiError(err);
+  }
+}
+
+export async function DELETE(req: Request, { params }: Ctx) {
+  try {
+    const faculty = await requireRole("FACULTY");
+    const facultyId = faculty.faculty!.id;
+    await assertSessionOwnership(facultyId, params.id);
+
+    const body = await req.json().catch(() => {
+      throw new ApiError("Invalid JSON body.", 400, "INVALID_BODY");
+    });
+    const parsed = rosterSchema.safeParse(body);
+    if (!parsed.success) {
+      throw new ApiError("Validation failed.", 422, "VALIDATION_ERROR", zodFieldErrors(parsed.error));
+    }
+    const { studentIds } = parsed.data;
+
+    const removed = studentIds.length;
+    await prisma.sessionStudent.deleteMany({
+      where: { sessionId: params.id, studentId: { in: studentIds } },
+    });
+    await recordAudit({
+      actorId: faculty.id,
+      action: "SESSION_STUDENTS_REMOVE",
+      entityType: "PracticalSession",
+      entityId: params.id,
+      metadata: { removed: studentIds },
+    });
+    return jsonSuccess(
+      { students: await getSessionStudents(facultyId, params.id) },
+      `Removed ${removed} student${removed === 1 ? "" : "s"} from the session.`
+    );
+  } catch (err) {
+    return handleApiError(err);
+  }
+}

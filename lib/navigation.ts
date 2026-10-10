@@ -12,6 +12,9 @@ export const NAV_ADMIN: NavItem[] = [
 
 export const NAV_FACULTY: NavItem[] = [
   { label: "Dashboard", href: "/faculty/dashboard", icon: "layout-dashboard", activeMatch: "/faculty/dashboard" },
+  { label: "Subjects", href: "/faculty/subjects", icon: "subjects", activeMatch: "/faculty/subjects" },
+  { label: "Sessions", href: "/faculty/sessions", icon: "sessions", activeMatch: "/faculty/sessions" },
+  { label: "Tasks", href: "/faculty/tasks", icon: "tasks", activeMatch: "/faculty/tasks" },
 ];
 
 export const NAV_STUDENT: NavItem[] = [

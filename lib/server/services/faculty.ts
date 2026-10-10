@@ -248,8 +248,56 @@ export async function getSessionTasks(
   }));
 }
 
-export async function getFacultyTaskDetail(facultyId: string, taskId: string) {
-  const task = await prisma.task.findUnique({
+export interface FacultyTaskOverviewRow {
+  id: string;
+  title: string;
+  status: "DRAFT" | "PUBLISHED" | "CLOSED" | "ARCHIVED";
+  maximumMarks: number;
+  deadline: string | null;
+  sessionId: string;
+  sessionName: string;
+  subjectCode: string;
+  enrolledCount: number;
+  submittedCount: number;
+  createdAt: string;
+}
+
+/** All tasks across a faculty member's sessions (spec §12 task overview). */
+export async function getFacultyTaskOverview(
+  facultyId: string
+): Promise<FacultyTaskOverviewRow[]> {
+  const tasks = await prisma.task.findMany({
+    where: { session: { facultyId } },
+    include: {
+      session: {
+        select: {
+          name: true,
+          subject: { select: { code: true } },
+          _count: { select: { students: true } },
+        },
+      },
+      submissions: { select: { status: true } },
+    },
+    orderBy: [{ createdAt: "desc" }],
+  });
+  return tasks.map((t) => ({
+    id: t.id,
+    title: t.title,
+    status: t.status,
+    maximumMarks: t.maximumMarks,
+    deadline: t.deadline ? t.deadline.toISOString() : null,
+    sessionId: t.sessionId,
+    sessionName: t.session.name,
+    subjectCode: t.session.subject.code,
+    enrolledCount: t.session._count.students,
+    submittedCount: t.submissions.filter(
+      (s) => s.status === "SUBMITTED" || s.status === "LATE" || s.status === "GRADED"
+    ).length,
+    createdAt: t.createdAt.toISOString(),
+  }));
+}
+
+export async function getFacultyTaskDetail(facultyId: string, taskId: string) {  const task = await prisma.task.findUnique({
     where: { id: taskId },
     include: {
       session: {
@@ -257,8 +305,7 @@ export async function getFacultyTaskDetail(facultyId: string, taskId: string) {
           subject: { select: { code: true, name: true } },
           _count: { select: { students: true } },
         },
-      },
-      submissions: { select: { status: true } },
+      },      submissions: { select: { status: true } },
       resources: { select: { id: true, title: true, originalName: true, sizeBytes: true, createdAt: true } },
     },
   });
@@ -274,6 +321,7 @@ export async function getFacultyTaskDetail(facultyId: string, taskId: string) {
     id: task.id,
     sessionId: task.sessionId,
     sessionName: task.session.name,
+    sessionStatus: task.session.status,
     subjectCode: task.session.subject.code,
     subjectName: task.session.subject.name,
     enrolledStudents: task.session._count.students,
