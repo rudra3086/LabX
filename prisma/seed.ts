@@ -336,7 +336,15 @@ async function main() {
         ? new Date(daysFromNow(t.deadlineDays).getTime() + 6 * 60 * 60 * 1000)
         : daysFromNow(t.deadlineDays, i % 2 === 0 ? 18 : 20, i % 2 === 0 ? 10 : 40);
 
-      const status: SubmissionStatus = late ? SubmissionStatus.LATE : SubmissionStatus.SUBMITTED;
+      // Grade the first 6 on-time students; late and later students stay
+      // ungraded so the demo shows pending/late/ungraded states.
+      const willGrade = !late && i < 6;
+      const status: SubmissionStatus = willGrade
+        ? SubmissionStatus.GRADED
+        : late
+          ? SubmissionStatus.LATE
+          : SubmissionStatus.SUBMITTED;
+
       const submission = await prisma.submission.create({
         data: {
           taskId,
@@ -350,18 +358,14 @@ async function main() {
         },
       });
 
-      // Grade on-time submissions of the first 6 students; others remain graded-pending
-      if ((!late && i < 6) || (late && i === 1)) {
-        const marks = Math.round((7 + ((i * 7) % 3) + (late ? 1 : 0)) * 10) / 10; // 7.0–10.0
+      if (willGrade) {
+        const marks = Math.round((7 + ((i * 7) % 3)) * 10) / 10; // 7.0–10.0
         await prisma.grade.create({
           data: {
             submissionId: submission.id,
             marks: Math.min(marks, t.maxMarks),
             maximumMarks: t.maxMarks,
-            remarks:
-              i === 1
-                ? "Correct implementation. Submitted after deadline—try to complete earlier next time."
-                : "Good implementation. Improve code documentation.",
+            remarks: "Good implementation. Improve code documentation.",
             isFinalized: true,
             gradedById: facultyUserId,
             gradedAt: new Date(daysFromNow(t.deadlineDays).getTime() + 2 * DAY_MS),

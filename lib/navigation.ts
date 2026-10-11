@@ -19,4 +19,8 @@ export const NAV_FACULTY: NavItem[] = [
 
 export const NAV_STUDENT: NavItem[] = [
   { label: "Dashboard", href: "/student/dashboard", icon: "layout-dashboard", activeMatch: "/student/dashboard" },
+  { label: "Subjects", href: "/student/subjects", icon: "subjects", activeMatch: "/student/subjects" },
+  { label: "Tasks", href: "/student/tasks", icon: "tasks", activeMatch: "/student/tasks" },
+  { label: "Submissions", href: "/student/submissions", icon: "submissions", activeMatch: "/student/submissions" },
+  { label: "Grades", href: "/student/grades", icon: "grades", activeMatch: "/student/grades" },
 ];

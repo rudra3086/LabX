@@ -141,3 +141,120 @@ export interface NavItem {
   icon: string;
   activeMatch: string; // path prefix used to highlight current nav item
 }
+
+// ----------------------------------------------------------------------------
+// Student side — submissions, task detail, grades (spec §21, §24–§28, §37)
+// ----------------------------------------------------------------------------
+
+export interface SubmissionFileItem {
+  id: string;
+  originalName: string;
+  mimeType: string;
+  sizeBytes: number;
+  versionNumber: number;
+  isLatest: boolean;
+  createdAt: string;
+}
+
+export interface SubmissionVersionItem {
+  versionNumber: number;
+  notes: string | null;
+  createdAt: string;
+  authorName: string;
+}
+
+export interface GradeView {
+  marks: number;
+  maximumMarks: number;
+  percentage: number;
+  remarks: string | null;
+  gradedAt: string;
+  isFinalized: boolean;
+}
+
+export interface SubmissionState {
+  id: string | null;
+  status: SubmissionStatus;
+  notes: string;
+  submittedAt: string | null;
+  updatedAt: string | null;
+  latestVersion: number | null;
+  files: SubmissionFileItem[];
+  versions: SubmissionVersionItem[];
+  grade: GradeView | null;
+}
+
+export interface StudentTaskDetail {
+  task: {
+    id: string;
+    title: string;
+    description: string | null;
+    instructions: string | null;
+    maximumMarks: number;
+    deadline: string | null;
+    allowLateSubmission: boolean;
+    allowResubmission: boolean;
+    resubmissionDeadline: string | null;
+    maxFiles: number;
+    maxFileSizeMb: number;
+    requiredFileTypes: string | null;
+    submissionFormat: string | null;
+    fileNamingConvention: string | null;
+    status: TaskStatus;
+  };
+  subject: { id: string; code: string; name: string; department: string };
+  session: { id: string; name: string; batch: string | null; semester: number; facultyName: string };
+  resources: {
+    id: string;
+    title: string;
+    originalName: string;
+    mimeType: string;
+    sizeBytes: number;
+    createdAt: string;
+  }[];
+  viewStatus: TaskViewStatus;
+  serverNow: string;
+  submission: SubmissionState;
+  policy: SubmissionPolicy;
+}
+
+export interface SubmissionPolicy {
+  /** Can the student edit notes / add or remove files right now? */
+  canEditFiles: boolean;
+  /** Can the student perform the final submit action right now? */
+  canSubmit: boolean;
+  /** Reasoned explanation when an action is blocked. */
+  lockReason: string | null;
+  /** Status that would be recorded if they submit now. */
+  statusOnSubmit: "SUBMITTED" | "LATE";
+}
+
+export interface StudentSubmissionListItem {
+  id: string | null;
+  taskId: string;
+  taskTitle: string;
+  subjectCode: string;
+  subjectName: string;
+  sessionName: string;
+  maximumMarks: number;
+  deadline: string | null;
+  status: SubmissionStatus;
+  viewStatus: TaskViewStatus;
+  submittedAt: string | null;
+  fileCount: number;
+  marks: number | null;
+}
+
+export interface StudentSubjectSummary {
+  subjectId: string;
+  code: string;
+  name: string;
+  semester: number;
+  department: string;
+  description: string | null;
+  sessionNames: string[];
+  taskCount: number;
+  submittedCount: number;
+  pendingCount: number;
+  missedCount: number;
+}

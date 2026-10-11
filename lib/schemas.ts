@@ -207,6 +207,27 @@ export const taskUpsertSchema = z.object({
 
 export type TaskUpsertData = z.infer<typeof taskUpsertSchema>;
 
+// ---------------------------------------------------------------------------
+// Student submissions & grading (spec §26, §34, §35)
+// ---------------------------------------------------------------------------
+
+export const submissionNotesSchema = z.object({
+  notes: z.string().max(5000, "Notes must be under 5000 characters").optional().transform((v) => v ?? ""),
+});
+
+export const gradeSchema = z.object({
+  marks: z.coerce.number().min(0, "Marks cannot be negative").max(100000),
+  remarks: z
+    .string()
+    .trim()
+    .max(5000, "Remarks must be under 5000 characters")
+    .nullable()
+    .optional()
+    .transform((v) => v || null),
+});
+
+export type GradeData = z.infer<typeof gradeSchema>;
+
 export const taskPatchSchema = z.object({
   title: taskUpsertSchema.shape.title.optional(),
   description: taskUpsertSchema.shape.description.optional(),

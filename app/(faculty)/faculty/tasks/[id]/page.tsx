@@ -8,12 +8,14 @@ import {
   Clock,
   Users,
   AlertTriangle,
+  ClipboardCheck,
 } from "lucide-react";
 import { getCurrentUser } from "@/lib/server/rbac";
 import { getFacultyTaskDetail } from "@/lib/server/services/faculty";
 import { ApiError } from "@/lib/server/http";
 import { PageHeader } from "@/components/layout/page-header";
 import { TaskStatusControls } from "@/components/faculty/task-status-controls";
+import { TaskResources } from "@/components/faculty/task-resources";
 import { Badge } from "@/components/ui/badge";
 import { StatCard } from "@/components/ui/stat-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -68,6 +70,12 @@ export default async function TaskDetailPage({
         }
         actions={
           <div className="flex items-center gap-2">
+            <Link
+              href={`/faculty/tasks/${task.id}/submissions`}
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-surface-300 bg-white px-3.5 text-sm font-medium text-surface-700 transition-colors hover:bg-surface-50"
+            >
+              <ClipboardCheck className="h-4 w-4" /> Submissions
+            </Link>
             <Link
               href={`/faculty/tasks/${task.id}/edit`}
               className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-surface-300 bg-white px-3.5 text-sm font-medium text-surface-700 transition-colors hover:bg-surface-50"
@@ -193,10 +201,19 @@ export default async function TaskDetailPage({
         </CardContent>
       </Card>
 
-      <p className="text-[13px] text-surface-400">
-        Reference materials and the submissions workspace arrive in the next
-        milestone.
-      </p>
+      <Card>
+        <CardHeader className="flex-row items-center justify-between">
+          <CardTitle>Reference materials</CardTitle>
+          <span className="text-xs text-surface-400">{task.resources.length} file(s)</span>
+        </CardHeader>
+        <CardContent>
+          <TaskResources
+            taskId={task.id}
+            initialResources={task.resources}
+            locked={task.status === "ARCHIVED" || task.sessionStatus === "ARCHIVED"}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }
