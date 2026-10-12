@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { NavItem, PublicUser } from "@/types";
 import { Sidebar, MobileNavToggle } from "./sidebar";
 import { initialsFor } from "./brand-mark";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 
 function pageTitleFor(pathname: string): string {
   // e.g. /admin/dashboard -> "Dashboard", /student/tasks -> "Tasks"
@@ -93,6 +94,7 @@ export function AppShell({
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <NotificationBell role={user.role} />
               <span className="hidden md:flex md:items-center md:gap-2.5">
                 <span className="text-right leading-tight">
                   <span className="block text-[13px] font-medium text-slate-800">{user.name}</span>

@@ -681,3 +681,79 @@ export async function gradeSubmission(
     gradedAt: grade.gradedAt.toISOString(),
   };
 }
+
+export interface FacultyStudentOverviewRow {
+  id: string;
+  studentId: string;
+  rollNumber: string;
+  name: string;
+  email: string;
+  department: string;
+  semester: number;
+  batch: string | null;
+  sessions: Array<{
+    id: string;
+    name: string;
+    subjectCode: string;
+  }>;
+}
+
+export async function getFacultyEnrolledStudents(
+  facultyId: string
+): Promise<FacultyStudentOverviewRow[]> {
+  const sessions = await prisma.practicalSession.findMany({
+    where: { facultyId },
+    select: {
+      id: true,
+      name: true,
+      subject: { select: { code: true } },
+      students: {
+        select: {
+          student: {
+            select: {
+              id: true,
+              studentId: true,
+              rollNumber: true,
+              department: true,
+              semester: true,
+              batch: true,
+              user: { select: { name: true, email: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const studentMap = new Map<string, FacultyStudentOverviewRow>();
+
+  for (const sess of sessions) {
+    for (const enr of sess.students) {
+      const st = enr.student;
+      let existing = studentMap.get(st.id);
+      if (!existing) {
+        existing = {
+          id: st.id,
+          studentId: st.studentId,
+          rollNumber: st.rollNumber,
+          name: st.user.name,
+          email: st.user.email,
+          department: st.department,
+          semester: st.semester,
+          batch: st.batch,
+          sessions: [],
+        };
+        studentMap.set(st.id, existing);
+      }
+      existing.sessions.push({
+        id: sess.id,
+        name: sess.name,
+        subjectCode: sess.subject.code,
+      });
+    }
+  }
+
+  return Array.from(studentMap.values()).sort((a, b) =>
+    a.rollNumber.localeCompare(b.rollNumber)
+  );
+}

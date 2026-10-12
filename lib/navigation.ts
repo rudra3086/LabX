@@ -8,6 +8,7 @@ export const NAV_ADMIN: NavItem[] = [
   { label: "Subjects", href: "/admin/subjects", icon: "subjects", activeMatch: "/admin/subjects" },
   { label: "Faculty", href: "/admin/faculty", icon: "faculty", activeMatch: "/admin/faculty" },
   { label: "Students", href: "/admin/students", icon: "students", activeMatch: "/admin/students" },
+  { label: "Reports", href: "/admin/reports", icon: "reports", activeMatch: "/admin/reports" },
 ];
 
 export const NAV_FACULTY: NavItem[] = [
@@ -15,6 +16,8 @@ export const NAV_FACULTY: NavItem[] = [
   { label: "Subjects", href: "/faculty/subjects", icon: "subjects", activeMatch: "/faculty/subjects" },
   { label: "Sessions", href: "/faculty/sessions", icon: "sessions", activeMatch: "/faculty/sessions" },
   { label: "Tasks", href: "/faculty/tasks", icon: "tasks", activeMatch: "/faculty/tasks" },
+  { label: "Students", href: "/faculty/students", icon: "students", activeMatch: "/faculty/students" },
+  { label: "Reports", href: "/faculty/reports", icon: "reports", activeMatch: "/faculty/reports" },
 ];
 
 export const NAV_STUDENT: NavItem[] = [
@@ -23,4 +26,6 @@ export const NAV_STUDENT: NavItem[] = [
   { label: "Tasks", href: "/student/tasks", icon: "tasks", activeMatch: "/student/tasks" },
   { label: "Submissions", href: "/student/submissions", icon: "submissions", activeMatch: "/student/submissions" },
   { label: "Grades", href: "/student/grades", icon: "grades", activeMatch: "/student/grades" },
+  { label: "Reports", href: "/student/reports", icon: "reports", activeMatch: "/student/reports" },
+  { label: "Notifications", href: "/student/notifications", icon: "notifications", activeMatch: "/student/notifications" },
 ];
