@@ -3,9 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "Segoe UI", "Inter", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  --font-mono: "Cascadia Code", "JetBrains Mono", monospace;
   color-scheme: light;
+  /* Fluent 2 brand ramp */
+  --brand: #5b5fc7;
+  --brand-hover: #4f52b2;
+  --brand-pressed: #444791;
 }
 
 html {
@@ -13,21 +17,27 @@ html {
 }
 
 body {
-  color: #1e293b;
-  background: #f6f7f9;
+  color: #242424;
+  background: #f3f2f1;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: rgba(21, 94, 117, 0.15);
-  color: #164e63;
+  background: rgba(91, 95, 199, 0.18);
+  color: #2b2c4a;
 }
 
-/* Custom subtle scrollbar */
+/* Fluent focus ring shared by interactive elements. */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+
+/* Fluent scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -35,11 +45,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #c8c6c4;
   border-radius: 9999px;
-  border: 2px solid #f6f7f9;
+  border: 3px solid #f3f2f1;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #a19f9d;
 }

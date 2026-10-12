@@ -46,21 +46,21 @@ export function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-navy-950/60 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-surface-900/50"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
       <div
         className={cn(
-          "relative z-10 w-full overflow-hidden rounded-xl border border-surface-200 bg-white shadow-elevated transition-all flex flex-col max-h-[90vh]",
+          "relative z-10 w-full overflow-hidden rounded-fluentLg border border-surface-200 bg-white shadow-elevated transition-all flex flex-col max-h-[90vh]",
           maxWidthStyles[maxWidth]
         )}
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-surface-200 px-6 py-4 bg-surface-50/50">
           <div>
-            <h2 className="text-base font-semibold text-navy-950">{title}</h2>
+            <h2 className="text-base font-semibold text-surface-900">{title}</h2>
             {description && (
               <p className="text-xs text-surface-500 mt-0.5">{description}</p>
             )}

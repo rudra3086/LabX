@@ -26,7 +26,7 @@ export function EmptyState({
       <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md border border-surface-200 bg-surface-50 text-surface-400">
         <Inbox className="h-4 w-4" />
       </div>
-      <p className="text-sm font-semibold text-slate-800">{title}</p>
+      <p className="text-sm font-semibold text-surface-900">{title}</p>
       {description && (
         <p className="mt-1 max-w-md text-[13px] leading-relaxed text-surface-500">{description}</p>
       )}

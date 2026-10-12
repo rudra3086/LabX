@@ -70,7 +70,7 @@ const VIEW_STATUS_CONFIG: Record<TaskViewStatus, { label: string; variant: Badge
   MISSED: { label: "Missed", variant: "rose", Icon: XCircle },
   SUBMITTED: { label: "Submitted", variant: "emerald", Icon: CheckCircle2 },
   SUBMITTED_LATE: { label: "Submitted late", variant: "amber", Icon: AlertTriangle },
-  GRADED: { label: "Graded", variant: "teal", Icon: CheckCircle2 },
+  GRADED: { label: "Graded", variant: "emerald", Icon: CheckCircle2 },
   CLOSED: { label: "Closed", variant: "slate", Icon: Lock },
 };
 
@@ -79,7 +79,7 @@ const SUBMISSION_STATUS_CONFIG: Record<SubmissionStatus, { label: string; varian
   DRAFT: { label: "In progress", variant: "slate", Icon: FileEdit },
   SUBMITTED: { label: "Submitted", variant: "emerald", Icon: CheckCircle2 },
   LATE: { label: "Late", variant: "rose", Icon: AlertTriangle },
-  GRADED: { label: "Graded", variant: "teal", Icon: CheckCircle2 },
+  GRADED: { label: "Graded", variant: "emerald", Icon: CheckCircle2 },
   MISSED: { label: "Missed", variant: "rose", Icon: XCircle },
 };
 

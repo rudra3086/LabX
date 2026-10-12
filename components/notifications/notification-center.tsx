@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 
 export interface NotificationItem {
   id: string;
@@ -25,18 +26,23 @@ export interface NotificationItem {
   createdAt: string;
 }
 
+const PAGE_SIZE = 20;
+
 export function NotificationCenter() {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = async (pageNum: number = 1) => {
     try {
-      const res = await fetch("/api/notifications");
+      const res = await fetch(`/api/notifications?page=${pageNum}&limit=${PAGE_SIZE}`);
       const json = await res.json();
       if (res.ok && json.success) {
         setNotifications(json.data.notifications);
         setUnreadCount(json.data.unreadCount);
+        setTotal(json.data.pagination.total);
       }
     } catch (e) {
       console.error("Failed to load notifications:", e);
@@ -46,8 +52,8 @@ export function NotificationCenter() {
   };
 
   useEffect(() => {
-    fetchNotifications();
-  }, []);
+    fetchNotifications(page);
+  }, [page]);
 
   const markAsRead = async (id: string) => {
     try {
@@ -78,7 +84,7 @@ export function NotificationCenter() {
   const getIcon = (type: NotificationItem["type"]) => {
     switch (type) {
       case "SUBMISSION_GRADED":
-        return <Award className="h-4 w-4 text-teal-600" />;
+        return <Award className="h-4 w-4 text-emerald-600" />;
       case "DEADLINE_REMINDER":
       case "DEADLINE_MISSED":
         return <CalendarClock className="h-4 w-4 text-amber-600" />;
@@ -94,7 +100,7 @@ export function NotificationCenter() {
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-surface-200 bg-white p-4 shadow-card">
         <div className="flex items-center gap-2">
           <Bell className="h-5 w-5 text-navy-700" />
-          <h2 className="text-base font-semibold text-slate-900">Notifications</h2>
+          <h2 className="text-base font-semibold text-surface-900">Notifications</h2>
           {unreadCount > 0 ? (
             <Badge variant="rose" size="sm">
               {unreadCount} unread
@@ -110,7 +116,7 @@ export function NotificationCenter() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={fetchNotifications}
+            onClick={() => fetchNotifications(1)}
             disabled={loading}
           >
             <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
@@ -157,7 +163,7 @@ export function NotificationCenter() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-slate-900">
+                        <span className="text-sm font-semibold text-surface-900">
                           {n.title}
                         </span>
                         {!n.read && (
@@ -199,6 +205,16 @@ export function NotificationCenter() {
           </div>
         )}
       </div>
+
+      <Pagination
+        page={page}
+        pageSize={PAGE_SIZE}
+        total={total}
+        onPageChange={(p) => {
+          setPage(p);
+          fetchNotifications(p);
+        }}
+      />
     </div>
   );
 }

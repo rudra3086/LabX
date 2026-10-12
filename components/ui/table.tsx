@@ -6,7 +6,7 @@ export function Table({
   ...props
 }: React.HTMLAttributes<HTMLTableElement>) {
   return (
-    <div className="relative w-full overflow-x-auto rounded-lg border border-surface-200 bg-white shadow-card">
+    <div className="relative w-full overflow-x-auto rounded-fluentLg border border-surface-200 bg-white shadow-card">
       <table
         className={cn("w-full caption-bottom text-sm border-collapse", className)}
         {...props}
@@ -76,7 +76,7 @@ export function TableCell({
   return (
     <td
       className={cn(
-        "px-4 py-3 align-middle text-slate-700 [&:has([role=checkbox])]:pr-0",
+        "px-4 py-3 align-middle text-surface-800 [&:has([role=checkbox])]:pr-0",
         className
       )}
       {...props}

@@ -25,7 +25,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "rounded-lg border border-surface-200 bg-white p-4 shadow-card",
+        "rounded-fluentLg border border-surface-200 bg-white p-4 shadow-card",
         className
       )}
     >
@@ -39,7 +39,7 @@ export function StatCard({
       </div>
 
       <div className="mt-2 flex items-baseline gap-2">
-        <span className="text-2xl font-semibold tabular-nums tracking-tight text-slate-900">
+        <span className="text-2xl font-semibold tabular-nums tracking-tight text-surface-900">
           {value}
         </span>
         {trend && (

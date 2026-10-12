@@ -1,5 +1,13 @@
 import type { Config } from "tailwindcss";
 
+// ============================================================================
+// SmartLab design tokens — Microsoft Teams / Fluent 2 inspired.
+//
+// The palette keeps the historical token names (`navy`, `teal`, `surface`,
+// `brand`) so every existing component re-skins automatically, but the values
+// now map to the Teams brand purple and the Fluent 2 neutral ramp.
+// ============================================================================
+
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,75 +18,85 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Teams brand purple (§ full Fluent redesign).
         navy: {
-          50: "#f2f5f9",
-          100: "#e1e8f2",
-          200: "#c4d2e5",
-          300: "#9bb5d4",
-          400: "#6d93bf",
-          500: "#4974a9",
-          600: "#2d568a",
-          700: "#1e3b62",
-          800: "#16233d",
-          900: "#0f182b",
-          950: "#080c16",
+          50: "#F5F5FF",
+          100: "#EBECFA",
+          200: "#D9DBF5",
+          300: "#BFC2EC",
+          400: "#9A9FE0",
+          500: "#7B81D6",
+          600: "#5B5FC7", // Teams primary
+          700: "#4F52B2", // hover
+          800: "#464775", // pressed / legacy Teams
+          900: "#3B3D66",
+          950: "#2B2C4A",
         },
+        // Secondary accent mapped onto the same brand ramp so any remaining
+        // `teal-*` usage stays on-palette.
         teal: {
-          50: "#f0fdfa",
-          100: "#ccfbf1",
-          200: "#99f6e4",
-          300: "#5eead4",
-          400: "#2dd4bf",
-          500: "#14b8a6",
-          600: "#0d9488",
-          700: "#0f766e",
-          800: "#115e59",
-          900: "#134e4a",
-          950: "#042f2e",
+          50: "#F5F5FF",
+          100: "#EBECFA",
+          200: "#D9DBF5",
+          300: "#BFC2EC",
+          400: "#9A9FE0",
+          500: "#7B81D6",
+          600: "#5B5FC7",
+          700: "#4F52B2",
+          800: "#464775",
+          900: "#3B3D66",
+          950: "#2B2C4A",
         },
+        // Fluent 2 neutral ramp.
         surface: {
-          50: "#f8fafc",
-          100: "#f1f5f9",
-          200: "#e2e8f0",
-          300: "#cbd5e1",
-          400: "#94a3b8",
-          500: "#64748b",
-          600: "#475569",
-          700: "#334155",
-          800: "#1e293b",
-          900: "#0f172a",
-          950: "#020617",
+          50: "#FAF9F8", // neutralBackground2
+          100: "#F3F2F1", // neutralBackground3
+          200: "#EDEBE9", // neutralBackground4
+          300: "#D1D1D1", // neutralStroke1
+          400: "#A19F9D", // neutralForeground4
+          500: "#605E5C",
+          600: "#484644",
+          700: "#323130",
+          800: "#201F1E",
+          900: "#1B1A19",
+          950: "#0F0F0E",
         },
         brand: {
-          bg: "#f8fafc",
-          surface: "#ffffff",
-          muted: "#f1f5f9",
-          border: "#e2e8f0",
-          text: "#0f172a",
-          subtext: "#64748b",
+          bg: "#F3F2F1",
+          surface: "#FFFFFF",
+          muted: "#FAF9F8",
+          border: "#E0E0E0",
+          text: "#242424",
+          subtext: "#616161",
         },
       },
       fontFamily: {
         sans: [
+          "Segoe UI",
           "Inter",
           "-apple-system",
           "BlinkMacSystemFont",
-          "Segoe UI",
           "Roboto",
+          "Helvetica Neue",
           "sans-serif",
         ],
         mono: [
+          "Cascadia Code",
           "JetBrains Mono",
           "Fira Code",
-          "Cascadia Code",
           "Consolas",
           "monospace",
         ],
       },
+      borderRadius: {
+        fluent: "4px",
+        fluentLg: "8px",
+      },
       boxShadow: {
-        card: "0 1px 2px 0 rgba(16, 24, 40, 0.04)",
+        // Fluent 2 elevation tokens.
+        card: "0 1px 2px rgba(0, 0, 0, 0.07)",
         elevated:
-          "0 8px 24px -8px rgba(16, 24, 40, 0.12), 0 2px 6px -2px rgba(16, 24, 40, 0.04)",
+          "0 8px 16px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12)",
       },
       animation: {
         "pulse-subtle": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",

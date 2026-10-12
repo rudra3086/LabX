@@ -11,15 +11,21 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const limit = Math.min(50, Math.max(1, parseInt(searchParams.get("limit") || "20", 10)));
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+    const skip = (page - 1) * limit;
 
-    const [notifications, unreadCount] = await Promise.all([
+    const [notifications, unreadCount, total] = await Promise.all([
       prisma.notification.findMany({
         where: { userId: user.id },
         orderBy: { createdAt: "desc" },
         take: limit,
+        skip,
       }),
       prisma.notification.count({
         where: { userId: user.id, read: false },
+      }),
+      prisma.notification.count({
+        where: { userId: user.id },
       }),
     ]);
 
@@ -34,6 +40,7 @@ export async function GET(request: NextRequest) {
         createdAt: n.createdAt.toISOString(),
       })),
       unreadCount,
+      pagination: { page, limit, total },
     });
   } catch (err) {
     return handleApiError(err);

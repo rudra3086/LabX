@@ -28,8 +28,10 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           id={inputId}
           ref={ref}
           className={cn(
-            "h-9 w-full rounded-lg border bg-white px-3 text-sm text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-navy-600 focus:border-transparent disabled:bg-surface-50 disabled:text-surface-400",
-            error ? "border-rose-400 text-rose-900" : "border-surface-300",
+            "h-8 w-full rounded-fluent border bg-white px-2.5 text-[13px] text-surface-900 transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 disabled:bg-surface-100 disabled:text-surface-400",
+            error
+              ? "border-rose-400 focus-visible:outline-rose-600 text-rose-900"
+              : "border-surface-300 focus-visible:outline-navy-600",
             !props.value && "text-surface-400",
             className
           )}

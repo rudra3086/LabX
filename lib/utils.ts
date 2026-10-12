@@ -5,6 +5,17 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function roleLabel(role: "ADMIN" | "FACULTY" | "STUDENT"): string {
+  switch (role) {
+    case "ADMIN":
+      return "Administrator";
+    case "FACULTY":
+      return "Faculty";
+    default:
+      return "Student";
+  }
+}
+
 export function formatDate(dateString: string): string {
   try {
     const d = new Date(dateString);

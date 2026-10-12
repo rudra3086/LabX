@@ -47,7 +47,7 @@ export function ConfirmDialog({
         role="alertdialog"
         aria-modal="true"
         aria-label={title}
-        className="relative w-full max-w-sm rounded-lg border border-surface-200 bg-white p-5 shadow-elevated"
+        className="relative w-full max-w-sm rounded-fluentLg border border-surface-200 bg-white p-5 shadow-elevated"
       >
         <div className="flex items-start gap-3">
           <span
@@ -60,7 +60,7 @@ export function ConfirmDialog({
             <TriangleAlert className="h-4 w-4" />
           </span>
           <div className="min-w-0">
-            <h2 className="text-sm font-semibold tracking-tight text-slate-900">{title}</h2>
+            <h2 className="text-sm font-semibold tracking-tight text-surface-900">{title}</h2>
             <p className="mt-1 text-[13px] leading-relaxed text-surface-500">{description}</p>
           </div>
         </div>

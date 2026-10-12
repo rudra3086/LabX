@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 
+/** Teams-style channel/page header (spec §46, §48). */
 export function PageHeader({
   title,
   description,
@@ -16,17 +17,19 @@ export function PageHeader({
   return (
     <div
       className={cn(
-        "flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
+        "flex flex-col gap-3 border-b border-surface-200 pb-4 sm:flex-row sm:items-center sm:justify-between",
         className
       )}
     >
-      <div className="space-y-1">
+      <div className="min-w-0 space-y-0.5">
         {eyebrow && (
-          <p className="text-[11px] font-medium uppercase tracking-wider text-surface-400">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-navy-700">
             {eyebrow}
           </p>
         )}
-        <h2 className="text-lg font-semibold tracking-tight text-slate-900">{title}</h2>
+        <h2 className="truncate text-xl font-semibold tracking-tight text-surface-900">
+          {title}
+        </h2>
         {description && (
           <p className="text-[13px] leading-relaxed text-surface-500">{description}</p>
         )}
@@ -47,7 +50,7 @@ export function SectionHeader({
 }) {
   return (
     <div className={cn("flex items-baseline justify-between", className)}>
-      <h3 className="text-sm font-semibold tracking-tight text-slate-900">{title}</h3>
+      <h3 className="text-sm font-semibold tracking-tight text-surface-900">{title}</h3>
       {meta && <span className="text-xs text-surface-400">{meta}</span>}
     </div>
   );

@@ -10,12 +10,12 @@ export function BrandMark({
 }) {
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-800 text-white shadow-card">
+      <span className="flex h-8 w-8 items-center justify-center rounded-fluent bg-navy-600 text-white shadow-card">
         <FlaskConical className="h-4 w-4" aria-hidden="true" />
       </span>
       {withWordmark && (
         <span className="leading-tight">
-          <span className="block text-[15px] font-semibold tracking-tight text-slate-900">
+          <span className="block text-[15px] font-semibold tracking-tight text-surface-900">
             SmartLab
           </span>
           <span className="block text-[11px] font-normal text-surface-400">

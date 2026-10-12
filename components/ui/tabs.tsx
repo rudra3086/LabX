@@ -30,10 +30,10 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
             key={tab.id}
             onClick={() => onChange(tab.id)}
             className={cn(
-              "flex items-center gap-2 border-b-2 px-3.5 py-2.5 text-xs font-medium transition-all whitespace-nowrap",
+              "flex items-center gap-2 border-b-2 px-3.5 py-2.5 text-[13px] transition-all whitespace-nowrap",
               isActive
-                ? "border-teal-600 text-teal-800 font-semibold bg-teal-50/40 rounded-t-md"
-                : "border-transparent text-surface-500 hover:border-surface-300 hover:text-surface-800"
+                ? "border-navy-600 text-surface-900 font-semibold"
+                : "border-transparent text-surface-500 font-normal hover:text-surface-800"
             )}
           >
             {tab.icon && <span className="shrink-0">{tab.icon}</span>}
@@ -41,9 +41,9 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
             {tab.count !== undefined && (
               <span
                 className={cn(
-                  "rounded-full px-1.5 py-0.2 text-[10px] font-semibold",
+                  "rounded-full px-1.5 text-[10px] font-semibold tabular-nums",
                   isActive
-                    ? "bg-teal-600 text-white"
+                    ? "bg-navy-600 text-white"
                     : "bg-surface-200 text-surface-600"
                 )}
               >

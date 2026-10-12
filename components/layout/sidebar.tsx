@@ -15,10 +15,11 @@ import {
   Menu,
   X,
   LogOut,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NavItem, PublicUser } from "@/types";
-import { BrandMark, initialsFor } from "./brand-mark";
+import { initialsFor } from "./brand-mark";
 
 const ICONS: Record<string, typeof LayoutDashboard> = {
   "layout-dashboard": LayoutDashboard,
@@ -32,18 +33,17 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
   reports: FileText,
   notifications: Bell,
   profile: UserCircle,
+  settings: Settings,
 };
 
-const NAV_SECTION: Record<string, string> = {
-  Administrator: "Administration",
-  Faculty: "Teaching",
-  Student: "My Learning",
-};
-
+/**
+ * Teams-style navigation rail (spec §47, full Fluent redesign). A narrow
+ * vertical rail of app icons with labels, a purple active indicator, and the
+ * signed-in user pinned to the bottom.
+ */
 export function Sidebar({
   navItems,
   user,
-  roleLabel,
   onNavigate,
   onLogout,
 }: {
@@ -54,17 +54,21 @@ export function Sidebar({
   onLogout?: () => void;
 }) {
   const pathname = usePathname();
-  const section = NAV_SECTION[roleLabel] ?? "Navigation";
 
   return (
-    <aside className="flex h-full w-64 flex-col border-r border-surface-200 bg-white">
-      <div className="flex h-16 items-center border-b border-surface-100 px-4">
-        <BrandMark />
-      </div>
+    <aside className="flex h-full w-[76px] flex-col items-center border-r border-surface-200 bg-[#EBEBEB] py-2">
+      <Link
+        href="/"
+        aria-label="SmartLab home"
+        className="mb-1 flex h-11 w-11 items-center justify-center rounded-fluent bg-navy-600 text-white shadow-card"
+      >
+        <GraduationCap className="h-5 w-5" aria-hidden="true" />
+      </Link>
 
-      <p className="px-4 pb-1.5 pt-4 text-xs font-semibold text-surface-400">{section}</p>
-
-      <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 pb-4" aria-label="Main navigation">
+      <nav
+        className="flex w-full flex-1 flex-col items-stretch gap-0.5 overflow-y-auto pt-2"
+        aria-label="Main navigation"
+      >
         {navItems.map((item) => {
           const Icon = ICONS[item.icon] ?? LayoutDashboard;
           const active = pathname.startsWith(item.activeMatch);
@@ -75,34 +79,44 @@ export function Sidebar({
               onClick={onNavigate}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm transition-colors",
+                "group relative mx-1 flex flex-col items-center gap-1 rounded-fluent px-1 py-2.5 transition-colors",
                 active
-                  ? "bg-surface-100 font-medium text-navy-900"
-                  : "font-normal text-surface-600 hover:bg-surface-50 hover:text-slate-900"
+                  ? "bg-white text-navy-700 shadow-card"
+                  : "text-surface-600 hover:bg-white/60 hover:text-surface-900"
               )}
             >
+              {active && (
+                <span
+                  aria-hidden="true"
+                  className="absolute left-0 top-1/2 h-8 w-[3px] -translate-y-1/2 rounded-r-full bg-navy-600"
+                />
+              )}
               <Icon
                 className={cn(
-                  "h-4 w-4 shrink-0",
-                  active ? "text-navy-700" : "text-surface-400"
+                  "h-5 w-5 shrink-0",
+                  active ? "text-navy-600" : "text-surface-500 group-hover:text-surface-700"
                 )}
               />
-              <span>{item.label}</span>
+              <span
+                className={cn(
+                  "text-center text-[10px] leading-tight",
+                  active ? "font-semibold" : "font-normal"
+                )}
+              >
+                {item.label}
+              </span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="flex items-center gap-2.5 border-t border-surface-100 px-4 py-3">
+      <div className="mt-1 flex flex-col items-center gap-1 border-t border-surface-300/60 px-1 pt-2">
         <span
           aria-hidden="true"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-navy-50 text-[13px] font-semibold text-navy-800"
+          title={user.name}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-600 text-[12px] font-semibold text-white"
         >
           {initialsFor(user.name)}
-        </span>
-        <span className="min-w-0 flex-1 leading-tight">
-          <span className="block truncate text-[13px] font-medium text-slate-800">{user.name}</span>
-          <span className="block truncate text-xs text-surface-400">{user.email}</span>
         </span>
         {onLogout && (
           <button
@@ -110,7 +124,7 @@ export function Sidebar({
             onClick={onLogout}
             aria-label="Log out"
             title="Log out"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-surface-400 transition-colors hover:bg-surface-100 hover:text-slate-700"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-fluent text-surface-500 transition-colors hover:bg-white/70 hover:text-surface-800"
           >
             <LogOut className="h-4 w-4" />
           </button>
@@ -132,7 +146,7 @@ export function MobileNavToggle({
       onClick={onToggle}
       aria-label={open ? "Close menu" : "Open menu"}
       aria-expanded={open}
-      className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-surface-200 text-surface-600 lg:hidden"
+      className="inline-flex h-8 w-8 items-center justify-center rounded-fluent border border-surface-300 text-surface-600 lg:hidden"
     >
       {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
     </button>

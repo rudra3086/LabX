@@ -66,14 +66,14 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f6f7f9]">
-      <div className="h-1 w-full bg-navy-800" />
+    <div className="flex min-h-screen flex-col bg-[#F5F5F5]">
+      <div className="h-1 w-full bg-navy-600" />
       <div className="flex flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
           <div className="mb-8 flex flex-col items-center gap-4">
             <BrandMark withWordmark={false} />
             <div className="text-center">
-              <h1 className="text-xl font-semibold tracking-tight text-slate-900">SmartLab</h1>
+              <h1 className="text-xl font-semibold tracking-tight text-surface-900">SmartLab</h1>
               <p className="mt-1 text-sm text-surface-500">
                 Academic practical management for students and faculty
               </p>
@@ -83,7 +83,7 @@ function LoginForm() {
           <form
             onSubmit={handleSubmit}
             noValidate
-            className="rounded-lg border border-surface-200 bg-white p-6 shadow-card"
+            className="rounded-fluentLg border border-surface-200 bg-white p-6 shadow-elevated"
           >
             <div className="space-y-4">
               <Input
@@ -151,17 +151,17 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen flex-col bg-[#f6f7f9]">
-          <div className="h-1 w-full bg-navy-800" />
+        <div className="flex min-h-screen flex-col bg-[#F5F5F5]">
+          <div className="h-1 w-full bg-navy-600" />
           <div className="flex flex-1 items-center justify-center px-4 py-12">
             <div className="w-full max-w-sm">
               <div className="mb-8 flex flex-col items-center gap-4">
                 <BrandMark withWordmark={false} />
                 <div className="text-center">
-                  <h1 className="text-xl font-semibold tracking-tight text-slate-900">SmartLab</h1>
+                  <h1 className="text-xl font-semibold tracking-tight text-surface-900">SmartLab</h1>
                 </div>
               </div>
-              <div className="animate-pulse space-y-4 rounded-lg border border-surface-200 bg-white p-6 shadow-card">
+              <div className="animate-pulse space-y-4 rounded-fluentLg border border-surface-200 bg-white p-6 shadow-elevated">
                 <div className="h-8 rounded-md bg-surface-100" />
                 <div className="h-8 rounded-md bg-surface-100" />
                 <div className="h-10 rounded-md bg-surface-100" />
