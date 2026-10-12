@@ -119,7 +119,7 @@ export function SessionRoster({
       {error && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {error}
         </p>
@@ -151,7 +151,7 @@ export function SessionRoster({
             <TableBody>
               {students.map((s) => (
                 <TableRow key={s.id}>
-                  <TableCell className="font-mono text-[13px] text-navy-700">
+                  <TableCell className="font-mono text-sm text-navy-700">
                     {s.rollNumber}
                   </TableCell>
                   <TableCell className="font-medium text-slate-900">{s.name}</TableCell>
@@ -213,7 +213,7 @@ export function SessionRoster({
           </div>
 
           {filteredCandidates.length === 0 ? (
-            <p className="rounded-lg border border-dashed border-surface-200 px-4 py-6 text-center text-[13px] text-surface-400">
+            <p className="rounded-lg border border-dashed border-surface-200 px-4 py-6 text-center text-sm text-surface-400">
               {candidates.length === 0
                 ? "All active students are already enrolled in this session."
                 : "No students match your search."}
@@ -232,7 +232,7 @@ export function SessionRoster({
                           onChange={() => toggle(c.id)}
                           className="h-4 w-4 rounded border-surface-300 text-navy-700 focus:ring-navy-600"
                         />
-                        <span className="font-mono text-[13px] text-navy-700">{c.rollNumber}</span>
+                        <span className="font-mono text-sm text-navy-700">{c.rollNumber}</span>
                         <span className="font-medium text-slate-800">{c.name}</span>
                         <span className="text-xs text-surface-400">{c.email}</span>
                         {c.batch && (

@@ -60,7 +60,7 @@ export function Modal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-surface-200 px-6 py-4 bg-surface-50/50">
           <div>
-            <h2 className="text-base font-semibold text-surface-900">{title}</h2>
+            <h2 className="text-lg font-semibold text-surface-900">{title}</h2>
             {description && (
               <p className="text-xs text-surface-500 mt-0.5">{description}</p>
             )}

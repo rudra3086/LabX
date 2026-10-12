@@ -24,7 +24,7 @@ export function SessionTabs({ sessionId }: { sessionId: string }) {
             key={tab.href}
             href={tab.href}
             className={cn(
-              "-mb-px border-b-2 px-3 py-2 text-[13px] font-medium transition-colors",
+              "-mb-px border-b-2 px-3 py-2 text-sm font-medium transition-colors",
               active
                 ? "border-navy-700 text-navy-800"
                 : "border-transparent text-surface-500 hover:text-slate-900"

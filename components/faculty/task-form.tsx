@@ -130,13 +130,13 @@ export function TaskForm({
       {formError && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {formError}
         </p>
       )}
 
-      <p className="text-[13px] text-surface-500">
+      <p className="text-sm text-surface-500">
         Session: <span className="font-medium text-slate-700">{sessionLabel}</span>
       </p>
 
@@ -187,7 +187,7 @@ export function TaskForm({
         />
       </div>
 
-      <label className="flex items-center gap-2.5 text-[13px] text-slate-700">
+      <label className="flex items-center gap-2.5 text-sm text-slate-700">
         <input
           type="checkbox"
           checked={allowLateSubmission}

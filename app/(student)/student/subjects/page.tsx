@@ -42,7 +42,7 @@ export default async function StudentSubjectsPage() {
                       <div className="min-w-0">
                         <CardTitle className="flex items-center gap-2">
                           <BookOpen className="h-4 w-4 text-navy-700" />
-                          <span className="font-mono text-[13px] text-navy-700">{s.code}</span>
+                          <span className="font-mono text-sm text-navy-700">{s.code}</span>
                         </CardTitle>
                         <CardDescription className="mt-1 truncate">{s.name}</CardDescription>
                       </div>

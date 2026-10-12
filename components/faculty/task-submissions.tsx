@@ -200,7 +200,7 @@ export function TaskSubmissions({
             type="button"
             onClick={() => setFilter(f.id)}
             className={cn(
-              "inline-flex h-8 items-center gap-1.5 rounded-lg border px-3 text-[13px] font-medium transition-colors",
+              "inline-flex h-8 items-center gap-1.5 rounded-lg border px-3 text-sm font-medium transition-colors",
               filter === f.id
                 ? "border-navy-700 bg-navy-800 text-white"
                 : "border-surface-300 bg-white text-surface-600 hover:bg-surface-50"
@@ -209,7 +209,7 @@ export function TaskSubmissions({
             {f.label}
             <span
               className={cn(
-                "rounded-full px-1.5 text-[11px] tabular-nums",
+                "rounded-full px-1.5 text-[12px] tabular-nums",
                 filter === f.id ? "bg-white/20 text-white" : "bg-surface-100 text-surface-500"
               )}
             >
@@ -248,7 +248,7 @@ export function TaskSubmissions({
                   <TableCell>
                     <StatusBadge status={row.status} />
                   </TableCell>
-                  <TableCell className="text-[13px] text-surface-500">
+                  <TableCell className="text-sm text-surface-500">
                     {row.submittedAt ? formatIST(row.submittedAt) : "—"}
                   </TableCell>
                   <TableCell className="text-right tabular-nums text-surface-600">
@@ -302,7 +302,7 @@ export function TaskSubmissions({
           <div className="space-y-4">
             <div className="flex items-start gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4">
               <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-              <div className="text-[13px] text-emerald-900">
+              <div className="text-sm text-emerald-900">
                 <p className="font-semibold">Submission graded</p>
                 <p className="mt-1">
                   {confirmation.taskTitle} — {confirmation.marks} / {confirmation.maximumMarks}
@@ -328,13 +328,13 @@ export function TaskSubmissions({
         ) : detailError ? (
           <p
             role="alert"
-            className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+            className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
           >
             <CircleAlert className="h-3.5 w-3.5" /> {detailError}
           </p>
         ) : detail ? (
           <div className="space-y-5">
-            <div className="grid grid-cols-2 gap-3 text-[13px] sm:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
               <Info label="Task" value={detail.task.title} />
               <Info label="Status" value={detail.submission.status} />
               <Info
@@ -351,7 +351,7 @@ export function TaskSubmissions({
                 <p className="text-xs font-medium uppercase tracking-wider text-surface-400">
                   Student notes
                 </p>
-                <p className="mt-1 whitespace-pre-line text-[13px] text-surface-600">
+                <p className="mt-1 whitespace-pre-line text-sm text-surface-600">
                   {detail.submission.notes}
                 </p>
               </div>
@@ -362,7 +362,7 @@ export function TaskSubmissions({
                 Uploaded files
               </p>
               {detail.submission.files.length === 0 ? (
-                <p className="text-[13px] text-surface-400">No files were uploaded.</p>
+                <p className="text-sm text-surface-400">No files were uploaded.</p>
               ) : (
                 <ul className="divide-y divide-surface-100 rounded-lg border border-surface-200">
                   {detail.submission.files
@@ -371,7 +371,7 @@ export function TaskSubmissions({
                       <li key={f.id} className="flex items-center gap-3 px-3 py-2.5">
                         <FileText className="h-4 w-4 shrink-0 text-surface-400" />
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-[13px] font-medium text-slate-800">
+                          <p className="truncate text-sm font-medium text-slate-800">
                             {f.originalName}
                           </p>
                           <p className="text-xs text-surface-400">{formatBytes(f.sizeBytes)}</p>
@@ -393,7 +393,7 @@ export function TaskSubmissions({
                 <p className="mb-2 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-surface-400">
                   <History className="h-3.5 w-3.5" /> Version history
                 </p>
-                <ul className="space-y-1 text-[13px]">
+                <ul className="space-y-1 text-sm">
                   {detail.submission.versions.map((v) => (
                     <li key={v.versionNumber} className="flex justify-between text-surface-500">
                       <span>

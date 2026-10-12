@@ -69,7 +69,7 @@ export default async function StudentDashboardPage() {
                     <StatusBadge status={task.viewStatus} />
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-2 text-[13px]">
+                <CardContent className="space-y-2 text-sm">
                   <div className="flex items-center justify-between text-surface-600">
                     <span>Maximum marks</span>
                     <span className="font-medium tabular-nums text-slate-900">{task.maximumMarks}</span>
@@ -109,7 +109,7 @@ export default async function StudentDashboardPage() {
                       {g.subjectCode} · {g.subjectName} · graded {formatIST(g.gradedAt)}
                     </p>
                     {g.remarks && (
-                      <p className="mt-1 text-[13px] italic text-surface-500">“{g.remarks}”</p>
+                      <p className="mt-1 text-sm italic text-surface-500">“{g.remarks}”</p>
                     )}
                   </div>
                   <div className="shrink-0 text-right">

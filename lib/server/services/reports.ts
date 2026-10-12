@@ -1,5 +1,12 @@
 import { prisma } from "../prisma";
 import { ApiError } from "../http";
+import {
+  PdfDocument,
+  measureText,
+  truncateToWidth,
+  wrapText,
+  type PdfColor,
+} from "../pdf";
 
 export interface StudentSubjectPerformance {
   subjectId: string;
@@ -784,4 +791,344 @@ export function buildClassReportCsv(data: ClassMonthlyReportData): string {
     );
   }
   return lines.join("\r\n");
+}
+
+/* -------------------------------------------------------------------------- */
+/* PDF rendering (spec §42) — dependency-free, built on lib/server/pdf.ts      */
+/* -------------------------------------------------------------------------- */
+
+const PDF_MARGIN = 40;
+const PDF_BOTTOM = 56;
+const BRAND: PdfColor = [0.357, 0.373, 0.78]; // #5B5FC7
+const TEXT_DARK: PdfColor = [0.14, 0.14, 0.16];
+const TEXT_MUTED: PdfColor = [0.42, 0.42, 0.46];
+const RULE: PdfColor = [0.82, 0.82, 0.85];
+const HEADER_BG: PdfColor = [0.95, 0.95, 0.97];
+const WHITE: PdfColor = [1, 1, 1];
+
+interface PdfColumn {
+  header: string;
+  width: number;
+  align?: "left" | "right";
+}
+
+const INDICATOR_LABELS: Record<string, string> = {
+  GOOD_STANDING: "Good standing",
+  LOW_PERFORMANCE: "Low performance",
+  HIGH_MISSED: "High missed",
+  HIGH_LATE: "High late",
+};
+
+class PdfReport {
+  readonly doc = new PdfDocument();
+  y: number;
+
+  constructor(
+    private readonly title: string,
+    private readonly subtitle: string
+  ) {
+    this.doc.addPage();
+    this.y = this.drawHeader();
+  }
+
+  private drawHeader(): number {
+    this.doc.rect(0, 0, this.doc.width, 62, { fill: BRAND });
+    this.doc.text(PDF_MARGIN, 26, "SMARTLAB", {
+      size: 17,
+      bold: true,
+      color: WHITE,
+    });
+    this.doc.text(PDF_MARGIN, 46, this.subtitle, { size: 9, color: [0.87, 0.87, 1] });
+    const tw = measureText(this.title, 12.5, true);
+    this.doc.text(this.doc.width - PDF_MARGIN - tw, 30, this.title, {
+      size: 12.5,
+      bold: true,
+      color: WHITE,
+    });
+    return 88;
+  }
+
+  contentWidth(): number {
+    return this.doc.width - PDF_MARGIN * 2;
+  }
+
+  ensure(space: number): void {
+    if (this.y + space > this.doc.height - PDF_BOTTOM) {
+      this.doc.addPage();
+      this.y = this.drawHeader();
+    }
+  }
+
+  sectionTitle(text: string): void {
+    this.ensure(34);
+    this.doc.text(PDF_MARGIN, this.y, text.toUpperCase(), {
+      size: 10,
+      bold: true,
+      color: BRAND,
+    });
+    this.y += 8;
+    this.doc.line(PDF_MARGIN, this.y, this.doc.width - PDF_MARGIN, this.y, {
+      width: 0.8,
+      color: RULE,
+    });
+    this.y += 14;
+  }
+
+  /** Two-column key/value metrics table. */
+  metrics(rows: Array<[string, string]>): void {
+    const col = this.contentWidth() / 2;
+    for (let i = 0; i < rows.length; i += 2) {
+      this.ensure(20);
+      const pair = rows.slice(i, i + 2);
+      pair.forEach(([label, value], idx) => {
+        const x = PDF_MARGIN + idx * col;
+        this.doc.text(x, this.y, label, { size: 9, color: TEXT_MUTED });
+        const vw = measureText(value, 9, true);
+        this.doc.text(x + col - 10 - vw, this.y, value, {
+          size: 9,
+          bold: true,
+          color: TEXT_DARK,
+        });
+      });
+      this.y += 18;
+    }
+    this.y += 6;
+  }
+
+  table(columns: PdfColumn[], rows: string[][]): void {
+    const total = columns.reduce((sum, c) => sum + c.width, 0);
+    const size = 8.2;
+
+    const drawHead = () => {
+      this.ensure(22);
+      this.doc.rect(PDF_MARGIN, this.y - 4, total, 16, { fill: HEADER_BG });
+      let cx = PDF_MARGIN + 4;
+      for (const c of columns) {
+        this.doc.text(cx, this.y, c.header, {
+          size,
+          bold: true,
+          color: TEXT_DARK,
+        });
+        cx += c.width;
+      }
+      this.y += 18;
+    };
+
+    drawHead();
+    if (rows.length === 0) {
+      this.doc.text(PDF_MARGIN + 4, this.y, "No data for this period.", {
+        size,
+        color: TEXT_MUTED,
+      });
+      this.y += 16;
+      return;
+    }
+
+    for (const row of rows) {
+      if (this.y + 14 > this.doc.height - PDF_BOTTOM) {
+        this.doc.addPage();
+        this.y = this.drawHeader();
+        drawHead();
+      }
+      let cx = PDF_MARGIN + 4;
+      columns.forEach((c, idx) => {
+        const raw = row[idx] ?? "";
+        const text = truncateToWidth(raw, c.width - 8, size);
+        if (c.align === "right") {
+          const w = measureText(text, size);
+          this.doc.text(cx + c.width - 8 - w, this.y, text, {
+            size,
+            color: TEXT_DARK,
+          });
+        } else {
+          this.doc.text(cx, this.y, text, { size, color: TEXT_DARK });
+        }
+        cx += c.width;
+      });
+      this.y += 5;
+      this.doc.line(PDF_MARGIN, this.y, PDF_MARGIN + total, this.y, {
+        width: 0.5,
+        color: RULE,
+      });
+      this.y += 11;
+    }
+    this.y += 6;
+  }
+
+  paragraph(text: string): void {
+    const size = 9;
+    const lines = wrapText(text, this.contentWidth(), size);
+    for (const line of lines) {
+      this.ensure(14);
+      this.doc.text(PDF_MARGIN, this.y, line, { size, color: TEXT_DARK });
+      this.y += 13;
+    }
+    this.y += 4;
+  }
+
+  finalize(): Buffer {
+    const total = this.doc.pageCount;
+    for (let i = 0; i < total; i++) {
+      const label = `SmartLab  •  ${this.title}  •  Page ${i + 1} of ${total}`;
+      this.doc.textOnPage(i, PDF_MARGIN, this.doc.height - 34, label, {
+        size: 7.5,
+        color: TEXT_MUTED,
+      });
+    }
+    return this.doc.build();
+  }
+}
+
+function formatGeneratedAt(iso: string): string {
+  const d = new Date(iso);
+  return `${d.toISOString().slice(0, 10)} ${d.toISOString().slice(11, 16)} UTC`;
+}
+
+/** Builds a professional PDF for the student monthly report (spec §42). */
+export function buildStudentReportPdf(data: StudentMonthlyReportData): Buffer {
+  const report = new PdfReport(
+    `${data.period.monthName} ${data.period.year} Report`,
+    "Student Monthly Performance Report"
+  );
+
+  report.sectionTitle("Student Information");
+  report.metrics([
+    ["Student Name", data.student.name],
+    ["Roll Number", data.student.rollNumber],
+    ["Student ID", data.student.studentId],
+    ["Department", data.student.department],
+    ["Semester", String(data.student.semester)],
+    ["Batch", data.student.batch ?? "—"],
+    ["Report Period", `${data.period.monthName} ${data.period.year}`],
+    ["Report Status", data.status],
+  ]);
+
+  report.sectionTitle("Summary");
+  report.metrics([
+    ["Assigned Tasks", String(data.summary.assignedTasks)],
+    ["Submitted", String(data.summary.submittedCount)],
+    ["Pending", String(data.summary.pendingCount)],
+    ["Late", String(data.summary.lateCount)],
+    ["Missed", String(data.summary.missedCount)],
+    ["Graded", String(data.summary.gradedCount)],
+    ["Submission Rate", `${data.summary.submissionRate}%`],
+    [
+      "Average Score",
+      data.summary.averageScore !== null ? `${data.summary.averageScore}%` : "N/A",
+    ],
+    ["Marks Obtained", String(data.summary.totalMarksObtained)],
+    ["Maximum Marks", String(data.summary.totalMaximumMarks)],
+  ]);
+
+  report.sectionTitle("Subject-wise Performance");
+  report.table(
+    [
+      { header: "Code", width: 62 },
+      { header: "Subject", width: 148 },
+      { header: "Assigned", width: 48, align: "right" },
+      { header: "Submitted", width: 52, align: "right" },
+      { header: "Late", width: 38, align: "right" },
+      { header: "Missed", width: 44, align: "right" },
+      { header: "Graded", width: 45, align: "right" },
+      { header: "Score", width: 48, align: "right" },
+    ],
+    data.subjectPerformance.map((s) => [
+      s.subjectCode,
+      s.subjectName,
+      String(s.assignedTasks),
+      String(s.submittedCount),
+      String(s.lateCount),
+      String(s.missedCount),
+      String(s.gradedCount),
+      s.averagePercentage !== null ? `${s.averagePercentage}%` : "N/A",
+    ])
+  );
+
+  report.sectionTitle("Faculty Remarks");
+  report.table(
+    [
+      { header: "Task", width: 168 },
+      { header: "Marks", width: 52, align: "right" },
+      { header: "Remarks", width: 255 },
+    ],
+    data.remarks.map((r) => [
+      `[${r.subjectCode}] ${r.taskTitle}`,
+      `${r.marks}/${r.maximumMarks}`,
+      r.remarks,
+    ])
+  );
+
+  report.paragraph(
+    `Generated on ${formatGeneratedAt(data.generatedAt)}. This report is produced from recorded submission and grading data only; no estimates or projections are included.`
+  );
+
+  return report.finalize();
+}
+
+/** Builds a professional PDF for the faculty class report (spec §42, §43). */
+export function buildClassReportPdf(data: ClassMonthlyReportData): Buffer {
+  const report = new PdfReport(
+    `${data.period.monthName} ${data.period.year} Report`,
+    "Class Performance Report"
+  );
+
+  report.sectionTitle("Session Information");
+  report.metrics([
+    ["Session", data.session.name],
+    ["Subject", `${data.session.subjectCode} — ${data.session.subjectName}`],
+    ["Faculty", data.session.facultyName],
+    ["Semester", String(data.session.semester)],
+    ["Batch", data.session.batch ?? "—"],
+    ["Report Period", `${data.period.monthName} ${data.period.year}`],
+  ]);
+
+  report.sectionTitle("Class Metrics");
+  report.metrics([
+    ["Students", String(data.classMetrics.totalStudents)],
+    ["Tasks", String(data.classMetrics.totalTasks)],
+    ["Expected Submissions", String(data.classMetrics.expectedSubmissions)],
+    ["Total Submissions", String(data.classMetrics.totalSubmissions)],
+    ["Late Submissions", String(data.classMetrics.totalLateSubmissions)],
+    ["Missed Submissions", String(data.classMetrics.totalMissedSubmissions)],
+    ["Graded Submissions", String(data.classMetrics.totalGradedSubmissions)],
+    ["Submission Rate", `${data.classMetrics.submissionRate}%`],
+    ["Late Rate", `${data.classMetrics.lateRate}%`],
+    ["Missed Rate", `${data.classMetrics.missedRate}%`],
+    [
+      "Class Average",
+      data.classMetrics.classAverageScore !== null
+        ? `${data.classMetrics.classAverageScore}%`
+        : "N/A",
+    ],
+  ]);
+
+  report.sectionTitle("Student Roster Performance");
+  report.table(
+    [
+      { header: "Roll No.", width: 68 },
+      { header: "Student Name", width: 118 },
+      { header: "Submitted", width: 52, align: "right" },
+      { header: "Late", width: 38, align: "right" },
+      { header: "Missed", width: 44, align: "right" },
+      { header: "Graded", width: 45, align: "right" },
+      { header: "Average", width: 48, align: "right" },
+      { header: "Indicator", width: 82 },
+    ],
+    data.students.map((s) => [
+      s.rollNumber,
+      s.name,
+      String(s.submittedCount),
+      String(s.lateCount),
+      String(s.missedCount),
+      String(s.gradedCount),
+      s.averagePercentage !== null ? `${s.averagePercentage}%` : "N/A",
+      INDICATOR_LABELS[s.indicator] ?? s.indicator,
+    ])
+  );
+
+  report.paragraph(
+    `Generated on ${formatGeneratedAt(data.generatedAt)}. Indicators are rule-based (low performance < 40%; high missed >= 2; high late >= 2) and computed from recorded data only.`
+  );
+
+  return report.finalize();
 }

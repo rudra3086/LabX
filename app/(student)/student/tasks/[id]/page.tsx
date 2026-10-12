@@ -72,7 +72,7 @@ export default async function StudentTaskDetailPage({
                 <CardTitle>Description</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="whitespace-pre-line text-[13px] leading-relaxed text-surface-600">
+                <p className="whitespace-pre-line text-sm leading-relaxed text-surface-600">
                   {task.description || "No description provided."}
                 </p>
               </CardContent>
@@ -85,7 +85,7 @@ export default async function StudentTaskDetailPage({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="whitespace-pre-line text-[13px] leading-relaxed text-surface-600">
+                <p className="whitespace-pre-line text-sm leading-relaxed text-surface-600">
                   {task.instructions || "No instructions provided."}
                 </p>
               </CardContent>
@@ -98,7 +98,7 @@ export default async function StudentTaskDetailPage({
             <CardHeader>
               <CardTitle>Requirements</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 text-[13px]">
+            <CardContent className="space-y-3 text-sm">
               <Row label="Deadline">
                 {task.deadline ? formatIST(task.deadline) : "No deadline"}
               </Row>
@@ -147,7 +147,7 @@ export default async function StudentTaskDetailPage({
                         <FileText className="h-4 w-4" />
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[13px] font-medium text-slate-800">{r.title}</p>
+                        <p className="truncate text-sm font-medium text-slate-800">{r.title}</p>
                         <p className="text-xs text-surface-400">
                           {r.originalName} · {formatBytes(r.sizeBytes)}
                         </p>

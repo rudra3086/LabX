@@ -31,7 +31,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-[13px] font-medium text-slate-700"
+            className="block text-sm font-medium text-slate-700"
           >
             {label}
           </label>
@@ -46,7 +46,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             className={cn(
-              "h-8 w-full rounded-fluent border bg-white px-3 text-[13px] text-surface-900 placeholder:text-surface-400 transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 disabled:bg-surface-100 disabled:text-surface-400",
+              "h-9 w-full rounded-fluent border bg-white px-3 text-sm text-surface-900 placeholder:text-surface-400 transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 disabled:bg-surface-100 disabled:text-surface-400",
               leftElement && "pl-9",
               rightElement && "pr-9",
               error

@@ -70,13 +70,13 @@ export default async function FacultyTasksPage() {
                     </Link>
                   </TableCell>
                   <TableCell className="text-surface-600">
-                    <span className="font-mono text-[13px] text-navy-700">
+                    <span className="font-mono text-sm text-navy-700">
                       {t.subjectCode}
                     </span>
                     <span className="text-surface-400"> · </span>
                     {t.sessionName}
                   </TableCell>
-                  <TableCell className="text-[13px] text-surface-500">
+                  <TableCell className="text-sm text-surface-500">
                     {t.deadline ? (
                       <span className="inline-flex items-center gap-1">
                         <CalendarClock className="h-3.5 w-3.5 text-surface-400" />
@@ -101,7 +101,7 @@ export default async function FacultyTasksPage() {
                   <TableCell className="text-right">
                     <Link
                       href={`/faculty/tasks/${t.id}`}
-                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
+                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
                     >
                       Open <ArrowRight className="h-3.5 w-3.5" />
                     </Link>

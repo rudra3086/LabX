@@ -44,7 +44,7 @@ export function SessionStatusControls({
   };
 
   if (status === "ARCHIVED") {
-    return <p className="text-[13px] text-surface-400">This session is archived.</p>;
+    return <p className="text-sm text-surface-400">This session is archived.</p>;
   }
 
   return (
@@ -85,7 +85,7 @@ export function SessionStatusControls({
       {error && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-rose-600"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-rose-600"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {error}
         </p>

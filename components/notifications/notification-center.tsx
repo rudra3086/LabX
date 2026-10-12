@@ -171,7 +171,7 @@ export function NotificationCenter() {
                         )}
                       </div>
                       <p className="mt-0.5 text-xs text-surface-600">{n.message}</p>
-                      <span className="mt-1 block text-[11px] text-surface-400">
+                      <span className="mt-1 block text-[12px] text-surface-400">
                         {formattedDate}
                       </span>
                     </div>

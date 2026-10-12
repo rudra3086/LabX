@@ -99,7 +99,7 @@ export default async function SessionDetailPage({
           <CardTitle>Session description</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-[13px] leading-relaxed text-surface-600">
+          <p className="text-sm leading-relaxed text-surface-600">
             {session.description || "No description provided for this session."}
           </p>
         </CardContent>
@@ -114,7 +114,7 @@ export default async function SessionDetailPage({
             <Users className="h-4 w-4 text-navy-700" />
             <span className="text-sm font-semibold tracking-tight">Manage students</span>
           </div>
-          <p className="mt-1 text-[13px] text-surface-500">
+          <p className="mt-1 text-sm text-surface-500">
             Add or remove students from this session&apos;s roster.
           </p>
         </Link>
@@ -126,7 +126,7 @@ export default async function SessionDetailPage({
             <FileText className="h-4 w-4 text-navy-700" />
             <span className="text-sm font-semibold tracking-tight">Practical tasks</span>
           </div>
-          <p className="mt-1 text-[13px] text-surface-500">
+          <p className="mt-1 text-sm text-surface-500">
             Create tasks, set deadlines and publish them to students.
           </p>
         </Link>

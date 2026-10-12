@@ -42,7 +42,7 @@ export function Pagination({
         className
       )}
     >
-      <p className="text-[12px] tabular-nums text-surface-500">
+      <p className="text-[13px] tabular-nums text-surface-500">
         {total === 0 ? "No results" : `${start}–${end} of ${total}`}
       </p>
       <div className="flex items-center gap-1">
@@ -51,7 +51,7 @@ export function Pagination({
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
           aria-label="Previous page"
-          className="inline-flex h-7 w-7 items-center justify-center rounded-fluent border border-surface-200 bg-white text-surface-600 transition-colors hover:bg-surface-50 disabled:pointer-events-none disabled:opacity-40"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-fluent border border-surface-200 bg-white text-surface-600 transition-colors hover:bg-surface-50 disabled:pointer-events-none disabled:opacity-40"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -60,7 +60,7 @@ export function Pagination({
             <span
               key={`e-${i}`}
               aria-hidden="true"
-              className="px-1 text-[12px] text-surface-400"
+              className="px-1 text-[13px] text-surface-400"
             >
               …
             </span>
@@ -71,7 +71,7 @@ export function Pagination({
               onClick={() => onPageChange(p)}
               aria-current={p === page ? "page" : undefined}
               className={cn(
-                "h-7 min-w-7 px-1.5 text-[12px] font-medium tabular-nums transition-colors",
+                "h-8 min-w-8 px-2 text-[13px] font-medium tabular-nums transition-colors",
                 p === page
                   ? "rounded-fluent bg-navy-600 text-white"
                   : "rounded-fluent text-surface-600 hover:bg-surface-100"
@@ -86,7 +86,7 @@ export function Pagination({
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
           aria-label="Next page"
-          className="inline-flex h-7 w-7 items-center justify-center rounded-fluent border border-surface-200 bg-white text-surface-600 transition-colors hover:bg-surface-50 disabled:pointer-events-none disabled:opacity-40"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-fluent border border-surface-200 bg-white text-surface-600 transition-colors hover:bg-surface-50 disabled:pointer-events-none disabled:opacity-40"
         >
           <ChevronRight className="h-4 w-4" />
         </button>

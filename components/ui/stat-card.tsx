@@ -30,7 +30,7 @@ export function StatCard({
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <p className="text-[13px] font-medium text-surface-500">{title}</p>
+        <p className="text-sm font-medium text-surface-500">{title}</p>
         {icon && (
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-surface-200 bg-surface-50 text-surface-500">
             {icon}

@@ -7,6 +7,8 @@ import {
   getClassMonthlyReport,
   buildStudentReportCsv,
   buildClassReportCsv,
+  buildStudentReportPdf,
+  buildClassReportPdf,
 } from "@/lib/server/services/reports";
 
 export const dynamic = "force-dynamic";
@@ -18,12 +20,16 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type"); // "student" | "class"
     const id = searchParams.get("id"); // studentId or sessionId
+    const format = (searchParams.get("format") || "csv").toLowerCase();
     const now = new Date();
     const year = parseInt(searchParams.get("year") || "", 10) || now.getFullYear();
     const month = parseInt(searchParams.get("month") || "", 10) || now.getMonth() + 1;
 
     if (!type || !id) {
       throw new ApiError("Missing type or id parameter", 400, "BAD_REQUEST");
+    }
+    if (format !== "csv" && format !== "pdf") {
+      throw new ApiError("Unsupported export format", 400, "BAD_REQUEST");
     }
 
     if (type === "student") {
@@ -56,14 +62,25 @@ export async function GET(request: NextRequest) {
       }
 
       const report = await getStudentMonthlyReport(id, year, month);
-      const csv = buildStudentReportCsv(report);
-      const filename = `student_report_${targetStudent.rollNumber}_${year}_${month}.csv`;
+      const baseName = `student_report_${targetStudent.rollNumber}_${year}_${month}`;
 
+      if (format === "pdf") {
+        const pdf = buildStudentReportPdf(report);
+        return new NextResponse(new Uint8Array(pdf), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/pdf",
+            "Content-Disposition": `attachment; filename="${baseName}.pdf"`,
+          },
+        });
+      }
+
+      const csv = buildStudentReportCsv(report);
       return new NextResponse(csv, {
         status: 200,
         headers: {
           "Content-Type": "text/csv; charset=utf-8",
-          "Content-Disposition": `attachment; filename="${filename}"`,
+          "Content-Disposition": `attachment; filename="${baseName}.csv"`,
         },
       });
     } else if (type === "class") {
@@ -88,15 +105,26 @@ export async function GET(request: NextRequest) {
       }
 
       const report = await getClassMonthlyReport(id, year, month);
-      const csv = buildClassReportCsv(report);
       const safeName = targetSession.name.replace(/[^a-zA-Z0-9_-]/g, "_");
-      const filename = `class_report_${safeName}_${year}_${month}.csv`;
+      const baseName = `class_report_${safeName}_${year}_${month}`;
 
+      if (format === "pdf") {
+        const pdf = buildClassReportPdf(report);
+        return new NextResponse(new Uint8Array(pdf), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/pdf",
+            "Content-Disposition": `attachment; filename="${baseName}.pdf"`,
+          },
+        });
+      }
+
+      const csv = buildClassReportCsv(report);
       return new NextResponse(csv, {
         status: 200,
         headers: {
           "Content-Type": "text/csv; charset=utf-8",
-          "Content-Disposition": `attachment; filename="${filename}"`,
+          "Content-Disposition": `attachment; filename="${baseName}.csv"`,
         },
       });
     } else {

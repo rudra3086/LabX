@@ -15,10 +15,10 @@ export function BrandMark({
       </span>
       {withWordmark && (
         <span className="leading-tight">
-          <span className="block text-[15px] font-semibold tracking-tight text-surface-900">
+          <span className="block text-base font-semibold tracking-tight text-surface-900">
             SmartLab
           </span>
-          <span className="block text-[11px] font-normal text-surface-400">
+          <span className="block text-[12px] font-normal text-surface-400">
             Practical Work Platform
           </span>
         </span>

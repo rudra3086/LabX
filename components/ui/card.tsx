@@ -46,7 +46,7 @@ export function CardDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn("text-[13px] text-surface-500 font-normal leading-relaxed", className)}
+      className={cn("text-sm text-surface-500 font-normal leading-relaxed", className)}
       {...props}
     />
   );

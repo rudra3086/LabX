@@ -105,15 +105,15 @@ export function AppShell({
       <div className="lg:pl-[76px]">
         {/* Teams title / command bar */}
         <header className="sticky top-0 z-20 border-b border-surface-200 bg-white">
-          <div className="flex h-12 items-center gap-3 px-3 sm:px-4">
+          <div className="flex h-14 items-center gap-3 px-3 sm:px-4">
             <MobileNavToggle open={mobileOpen} onToggle={() => setMobileOpen((v) => !v)} />
 
             <div className="hidden min-w-0 items-center gap-2 sm:flex">
-              <span className="truncate text-[13px] font-semibold text-surface-900">
+              <span className="truncate text-sm font-semibold text-surface-900">
                 {teamName}
               </span>
               <span className="text-surface-300">/</span>
-              <span className="truncate text-[13px] text-surface-500">{pageTitle}</span>
+              <span className="truncate text-sm text-surface-500">{pageTitle}</span>
             </div>
 
             <form
@@ -128,7 +128,7 @@ export function AppShell({
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search"
                 aria-label="Search"
-                className="h-8 w-full rounded-fluent border border-surface-300 bg-surface-50 pl-8 pr-3 text-[13px] text-surface-900 placeholder:text-surface-400 focus:bg-white focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-navy-600"
+                className="h-9 w-full rounded-fluent border border-surface-300 bg-surface-50 pl-9 pr-3 text-sm text-surface-900 placeholder:text-surface-400 focus:bg-white focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-navy-600"
               />
             </form>
 
@@ -136,14 +136,14 @@ export function AppShell({
               <NotificationBell role={user.role} />
               <span className="mx-1 hidden h-6 w-px bg-surface-200 md:block" />
               <span className="hidden items-center gap-2 md:flex">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-navy-600 text-[11px] font-semibold text-white">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-600 text-[12px] font-semibold text-white">
                   {initialsFor(user.name)}
                 </span>
               </span>
               <button
                 onClick={() => void handleLogout()}
                 disabled={isLoggingOut}
-                className="inline-flex h-8 items-center gap-1.5 rounded-fluent px-2.5 text-[13px] font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-surface-900 disabled:opacity-60"
+                className="inline-flex h-9 items-center gap-1.5 rounded-fluent px-3 text-sm font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-surface-900 disabled:opacity-60"
               >
                 {isLoggingOut ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
                 <span className="hidden sm:inline">Log out</span>
@@ -152,7 +152,7 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-[1600px] px-5 py-8 sm:px-7 lg:px-8">
           <div key={pathname}>{children}</div>
         </main>
       </div>

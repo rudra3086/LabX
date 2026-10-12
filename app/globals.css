@@ -20,6 +20,8 @@ body {
   color: #242424;
   background: #f3f2f1;
   font-family: var(--font-sans);
+  font-size: 14px; /* Teams body1 default */
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 

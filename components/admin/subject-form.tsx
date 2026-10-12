@@ -85,7 +85,7 @@ export function SubjectForm({ initial }: { initial?: SubjectListItem }) {
       {formError && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {formError}
         </p>

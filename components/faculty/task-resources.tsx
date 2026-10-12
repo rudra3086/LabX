@@ -104,7 +104,7 @@ export function TaskResources({
       {error && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {error}
         </p>
@@ -123,7 +123,7 @@ export function TaskResources({
                 <FileText className="h-4 w-4" />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-medium text-slate-800">{r.title}</p>
+                <p className="truncate text-sm font-medium text-slate-800">{r.title}</p>
                 <p className="truncate text-xs text-surface-400">
                   {r.originalName} · {formatBytes(r.sizeBytes)} · {formatIST(r.createdAt)}
                 </p>

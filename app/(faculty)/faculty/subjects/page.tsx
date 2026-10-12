@@ -31,7 +31,7 @@ export default async function FacultySubjectsPage() {
               <CardContent className="flex flex-1 flex-col gap-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="font-mono text-[13px] text-navy-700">{s.code}</p>
+                    <p className="font-mono text-sm text-navy-700">{s.code}</p>
                     <h3 className="mt-0.5 text-sm font-semibold tracking-tight text-slate-900">
                       {s.name}
                     </h3>
@@ -40,11 +40,11 @@ export default async function FacultySubjectsPage() {
                     <BookOpen className="h-4 w-4" />
                   </span>
                 </div>
-                <p className="text-[13px] text-surface-500">
+                <p className="text-sm text-surface-500">
                   {s.department} · Semester {s.semester}
                 </p>
 
-                <div className="mt-auto flex items-center gap-4 border-t border-surface-100 pt-4 text-[13px] text-surface-600">
+                <div className="mt-auto flex items-center gap-4 border-t border-surface-100 pt-4 text-sm text-surface-600">
                   <span className="inline-flex items-center gap-1.5">
                     <FolderKanban className="h-3.5 w-3.5 text-surface-400" />
                     {s.sessionCount} session{s.sessionCount === 1 ? "" : "s"}
@@ -57,7 +57,7 @@ export default async function FacultySubjectsPage() {
 
                 <Link
                   href={`/faculty/sessions?subjectId=${s.subjectId}`}
-                  className="text-[13px] font-medium text-navy-700 hover:text-navy-900"
+                  className="text-sm font-medium text-navy-700 hover:text-navy-900"
                 >
                   View sessions →
                 </Link>

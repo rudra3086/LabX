@@ -33,7 +33,7 @@ export default async function AdminDashboardPage() {
               the PostgreSQL database — nothing is simulated.
             </CardDescription>
           </CardHeader>
-          <CardContent className="text-[13px] leading-relaxed text-surface-600">
+          <CardContent className="text-sm leading-relaxed text-surface-600">
             <ul className="list-disc space-y-1 pl-4">
               <li>Subject, faculty and student management</li>
               <li>Practical session and task publishing by faculty</li>

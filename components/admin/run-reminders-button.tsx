@@ -54,8 +54,8 @@ export function RunRemindersButton() {
           role="status"
           className={
             result.kind === "success"
-              ? "text-[13px] text-emerald-700"
-              : "text-[13px] text-rose-700"
+              ? "text-sm text-emerald-700"
+              : "text-sm text-rose-700"
           }
         >
           {result.message}

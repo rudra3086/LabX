@@ -123,10 +123,10 @@ export function SessionsList({
                   <p className="text-xs text-surface-400">Semester {s.semester}</p>
                 </TableCell>
                 <TableCell className="text-surface-600">
-                  <span className="font-mono text-[13px] text-navy-700">{s.subjectCode}</span>
+                  <span className="font-mono text-sm text-navy-700">{s.subjectCode}</span>
                 </TableCell>
                 <TableCell className="text-surface-600">{s.batch ?? "—"}</TableCell>
-                <TableCell className="text-[13px] text-surface-500">
+                <TableCell className="text-sm text-surface-500">
                   {s.startDate ? formatIST(s.startDate, false) : "—"}
                   {s.endDate ? ` → ${formatIST(s.endDate, false)}` : ""}
                 </TableCell>
@@ -149,14 +149,14 @@ export function SessionsList({
                   <div className="flex items-center justify-end gap-1">
                     <Link
                       href={`/faculty/sessions/${s.id}/tasks`}
-                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
+                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
                     >
                       Tasks <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
                     <Link
                       href={`/faculty/sessions/${s.id}/edit`}
                       aria-label={`Edit ${s.name}`}
-                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
+                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
                     >
                       <Pencil className="h-3.5 w-3.5" /> Edit
                     </Link>

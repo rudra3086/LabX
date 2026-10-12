@@ -30,7 +30,7 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
             key={tab.id}
             onClick={() => onChange(tab.id)}
             className={cn(
-              "flex items-center gap-2 border-b-2 px-3.5 py-2.5 text-[13px] transition-all whitespace-nowrap",
+              "flex items-center gap-2 border-b-2 px-3.5 py-2.5 text-sm transition-all whitespace-nowrap",
               isActive
                 ? "border-navy-600 text-surface-900 font-semibold"
                 : "border-transparent text-surface-500 font-normal hover:text-surface-800"
@@ -41,7 +41,7 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
             {tab.count !== undefined && (
               <span
                 className={cn(
-                  "rounded-full px-1.5 text-[10px] font-semibold tabular-nums",
+                  "rounded-full px-1.5 text-[11px] font-semibold tabular-nums",
                   isActive
                     ? "bg-navy-600 text-white"
                     : "bg-surface-200 text-surface-600"

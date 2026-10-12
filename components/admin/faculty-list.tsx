@@ -103,7 +103,7 @@ export function FacultyList({ items }: { items: FacultyListItem[] }) {
       {error && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {error}
         </p>
@@ -140,7 +140,7 @@ export function FacultyList({ items }: { items: FacultyListItem[] }) {
                     <span className="block text-xs font-normal text-surface-400">{f.designation}</span>
                   )}
                 </TableCell>
-                <TableCell className="font-mono text-[13px] text-surface-500">{f.employeeId}</TableCell>
+                <TableCell className="font-mono text-sm text-surface-500">{f.employeeId}</TableCell>
                 <TableCell className="text-surface-600">{f.email}</TableCell>
                 <TableCell className="text-surface-600">{f.department}</TableCell>
                 <TableCell>
@@ -177,7 +177,7 @@ export function FacultyList({ items }: { items: FacultyListItem[] }) {
                     <Link
                       href={`/admin/faculty/${f.id}/edit`}
                       aria-label={`Edit ${f.name}`}
-                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
+                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
                     >
                       <Pencil className="h-3.5 w-3.5" /> Edit
                     </Link>

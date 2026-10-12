@@ -44,7 +44,7 @@ export function Badge({
   };
 
   const sizeStyles = {
-    sm: "text-[11px] px-2 py-0.5 font-medium",
+    sm: "text-[12px] px-2 py-0.5 font-medium",
     md: "text-xs px-2.5 py-1 font-medium",
   };
 

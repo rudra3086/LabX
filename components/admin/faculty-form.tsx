@@ -122,7 +122,7 @@ export function FacultyForm({
           </span>
           <div>
             <h2 className="text-sm font-semibold tracking-tight text-slate-900">Faculty account created</h2>
-            <p className="mt-1 text-[13px] leading-relaxed text-surface-500">
+            <p className="mt-1 text-sm leading-relaxed text-surface-500">
               Share the one-time temporary password below. The faculty member should change it after
               first sign-in.
             </p>
@@ -155,7 +155,7 @@ export function FacultyForm({
       {formError && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {formError}
         </p>
@@ -206,7 +206,7 @@ export function FacultyForm({
       </div>
 
       <fieldset>
-        <legend className="block text-[13px] font-medium text-slate-700">
+        <legend className="block text-sm font-medium text-slate-700">
           Assigned subjects
         </legend>
         <p className="mt-0.5 text-xs text-surface-500">
@@ -232,7 +232,7 @@ export function FacultyForm({
                       onChange={() => toggleSubject(s.id)}
                       className="h-4 w-4 rounded border-surface-300 accent-navy-800"
                     />
-                    <span className="min-w-0 truncate text-[13px] text-slate-800">
+                    <span className="min-w-0 truncate text-sm text-slate-800">
                       <span className="font-mono text-xs text-navy-700">{s.code}</span>{" "}
                       <span className="text-surface-500">{s.name}</span>
                     </span>

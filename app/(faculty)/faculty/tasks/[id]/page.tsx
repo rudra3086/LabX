@@ -124,7 +124,7 @@ export default async function TaskDetailPage({
             <CardTitle>Description</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="whitespace-pre-line text-[13px] leading-relaxed text-surface-600">
+            <p className="whitespace-pre-line text-sm leading-relaxed text-surface-600">
               {task.description || "No description provided."}
             </p>
           </CardContent>
@@ -137,7 +137,7 @@ export default async function TaskDetailPage({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="whitespace-pre-line text-[13px] leading-relaxed text-surface-600">
+            <p className="whitespace-pre-line text-sm leading-relaxed text-surface-600">
               {task.instructions || "No instructions provided."}
             </p>
           </CardContent>
@@ -153,7 +153,7 @@ export default async function TaskDetailPage({
             <p className="text-xs font-medium uppercase tracking-wider text-surface-400">
               Deadline
             </p>
-            <p className="mt-1 text-[13px] text-slate-700">
+            <p className="mt-1 text-sm text-slate-700">
               {task.deadline ? formatIST(task.deadline) : "No deadline"}
             </p>
           </div>
@@ -161,7 +161,7 @@ export default async function TaskDetailPage({
             <p className="text-xs font-medium uppercase tracking-wider text-surface-400">
               Late submissions
             </p>
-            <p className="mt-1 text-[13px] text-slate-700">
+            <p className="mt-1 text-sm text-slate-700">
               {task.allowLateSubmission ? "Allowed (marked late)" : "Not allowed"}
             </p>
           </div>
@@ -169,7 +169,7 @@ export default async function TaskDetailPage({
             <p className="text-xs font-medium uppercase tracking-wider text-surface-400">
               File types
             </p>
-            <p className="mt-1 text-[13px] text-slate-700">
+            <p className="mt-1 text-sm text-slate-700">
               {task.requiredFileTypes || "Any accepted type"}
             </p>
           </div>
@@ -177,7 +177,7 @@ export default async function TaskDetailPage({
             <p className="text-xs font-medium uppercase tracking-wider text-surface-400">
               Submission format
             </p>
-            <p className="mt-1 text-[13px] text-slate-700">
+            <p className="mt-1 text-sm text-slate-700">
               {task.submissionFormat || "Not specified"}
             </p>
           </div>
@@ -185,7 +185,7 @@ export default async function TaskDetailPage({
             <p className="text-xs font-medium uppercase tracking-wider text-surface-400">
               Naming convention
             </p>
-            <p className="mt-1 text-[13px] text-slate-700">
+            <p className="mt-1 text-sm text-slate-700">
               {task.fileNamingConvention || "Not specified"}
             </p>
           </div>
@@ -193,7 +193,7 @@ export default async function TaskDetailPage({
             <p className="text-xs font-medium uppercase tracking-wider text-surface-400">
               Created
             </p>
-            <p className="mt-1 text-[13px] text-slate-700 flex items-center gap-1.5">
+            <p className="mt-1 text-sm text-slate-700 flex items-center gap-1.5">
               <CalendarClock className="h-3.5 w-3.5 text-surface-400" />
               {formatIST(task.createdAt)}
             </p>

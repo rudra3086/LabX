@@ -109,7 +109,7 @@ function LoginForm() {
             {formError && (
               <p
                 role="alert"
-                className="mt-4 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+                className="mt-4 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
               >
                 {formError}
               </p>
@@ -127,7 +127,7 @@ function LoginForm() {
           </form>
 
           <div className="mt-5 rounded-md border border-surface-200 bg-surface-50 px-4 py-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+            <p className="text-[12px] font-semibold uppercase tracking-wider text-surface-400">
               Development demo accounts
             </p>
             <div className="mt-2 space-y-0.5 text-xs leading-relaxed text-surface-500">

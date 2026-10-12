@@ -15,7 +15,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="w-full space-y-1.5">
         {label && (
-          <label htmlFor={inputId} className="block text-[13px] font-medium text-slate-700">
+          <label htmlFor={inputId} className="block text-sm font-medium text-slate-700">
             {label}
           </label>
         )}
@@ -24,7 +24,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           rows={props.rows ?? 4}
           className={cn(
-            "w-full rounded-fluent border bg-white px-3 py-2 text-[13px] text-surface-900 placeholder:text-surface-400 transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 disabled:bg-surface-100 disabled:text-surface-400",
+            "w-full rounded-fluent border bg-white px-3 py-2 text-sm text-surface-900 placeholder:text-surface-400 transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 disabled:bg-surface-100 disabled:text-surface-400",
             error
               ? "border-rose-400 focus-visible:outline-rose-600 text-rose-900"
               : "border-surface-300 focus-visible:outline-navy-600",

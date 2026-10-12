@@ -103,7 +103,7 @@ export function StudentsList({ items }: { items: StudentListItem[] }) {
       {error && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {error}
         </p>
@@ -135,8 +135,8 @@ export function StudentsList({ items }: { items: StudentListItem[] }) {
           <TableBody>
             {filtered.map((s) => (
               <TableRow key={s.id}>
-                <TableCell className="font-mono text-[13px] text-navy-700">{s.rollNumber}</TableCell>
-                <TableCell className="font-mono text-[13px] text-surface-500">{s.studentId}</TableCell>
+                <TableCell className="font-mono text-sm text-navy-700">{s.rollNumber}</TableCell>
+                <TableCell className="font-mono text-sm text-surface-500">{s.studentId}</TableCell>
                 <TableCell className="font-medium text-slate-900">{s.name}</TableCell>
                 <TableCell className="text-surface-600">{s.email}</TableCell>
                 <TableCell className="tabular-nums text-surface-600">{s.semester}</TableCell>
@@ -159,7 +159,7 @@ export function StudentsList({ items }: { items: StudentListItem[] }) {
                     <Link
                       href={`/admin/students/${s.id}/edit`}
                       aria-label={`Edit ${s.name}`}
-                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
+                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
                     >
                       <Pencil className="h-3.5 w-3.5" /> Edit
                     </Link>

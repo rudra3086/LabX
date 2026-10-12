@@ -130,7 +130,7 @@ export function SessionForm({
     return (
       <div className="max-w-2xl rounded-lg border border-surface-200 bg-white p-6 shadow-card">
         <p className="text-sm font-semibold text-slate-800">No subjects assigned</p>
-        <p className="mt-1 text-[13px] text-surface-500">
+        <p className="mt-1 text-sm text-surface-500">
           You need at least one subject before you can create a practical session.
           Ask an administrator to assign you a subject.
         </p>
@@ -152,7 +152,7 @@ export function SessionForm({
       {formError && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {formError}
         </p>

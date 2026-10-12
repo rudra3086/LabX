@@ -7,8 +7,8 @@ import { roleLabel } from "@/lib/utils";
 function DetailRow({ label, value }: { label: string; value?: string | null }) {
   return (
     <div className="flex items-start justify-between gap-4 py-2.5">
-      <dt className="text-[13px] text-surface-500">{label}</dt>
-      <dd className="text-[13px] font-medium text-surface-900">{value || "—"}</dd>
+      <dt className="text-sm text-surface-500">{label}</dt>
+      <dd className="text-sm font-medium text-surface-900">{value || "—"}</dd>
     </div>
   );
 }
@@ -60,7 +60,7 @@ export function ProfileView({ user }: { user: CurrentUser }) {
           </span>
           <div>
             <h2 className="text-base font-semibold text-surface-900">{user.name}</h2>
-            <p className="mt-0.5 text-[13px] text-surface-500">{user.email}</p>
+            <p className="mt-0.5 text-sm text-surface-500">{user.email}</p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="navy">{roleLabel(user.role)}</Badge>

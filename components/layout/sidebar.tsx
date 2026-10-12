@@ -99,7 +99,7 @@ export function Sidebar({
               />
               <span
                 className={cn(
-                  "text-center text-[10px] leading-tight",
+                  "text-center text-xs leading-tight",
                   active ? "font-semibold" : "font-normal"
                 )}
               >
@@ -114,7 +114,7 @@ export function Sidebar({
         <span
           aria-hidden="true"
           title={user.name}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-600 text-[12px] font-semibold text-white"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-600 text-[13px] font-semibold text-white"
         >
           {initialsFor(user.name)}
         </span>
@@ -124,7 +124,7 @@ export function Sidebar({
             onClick={onLogout}
             aria-label="Log out"
             title="Log out"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-fluent text-surface-500 transition-colors hover:bg-white/70 hover:text-surface-800"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-fluent text-surface-500 transition-colors hover:bg-white/70 hover:text-surface-800"
           >
             <LogOut className="h-4 w-4" />
           </button>
@@ -146,7 +146,7 @@ export function MobileNavToggle({
       onClick={onToggle}
       aria-label={open ? "Close menu" : "Open menu"}
       aria-expanded={open}
-      className="inline-flex h-8 w-8 items-center justify-center rounded-fluent border border-surface-300 text-surface-600 lg:hidden"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-fluent border border-surface-300 text-surface-600 lg:hidden"
     >
       {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
     </button>

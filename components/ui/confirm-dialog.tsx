@@ -61,7 +61,7 @@ export function ConfirmDialog({
           </span>
           <div className="min-w-0">
             <h2 className="text-sm font-semibold tracking-tight text-surface-900">{title}</h2>
-            <p className="mt-1 text-[13px] leading-relaxed text-surface-500">{description}</p>
+            <p className="mt-1 text-sm leading-relaxed text-surface-500">{description}</p>
           </div>
         </div>
         <div className="mt-5 flex justify-end gap-2">

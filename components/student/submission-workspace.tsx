@@ -229,7 +229,7 @@ export function SubmissionWorkspace({ detail }: { detail: StudentTaskDetail }) {
       {error && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {error}
         </p>
@@ -240,7 +240,7 @@ export function SubmissionWorkspace({ detail }: { detail: StudentTaskDetail }) {
           <p className="flex items-center gap-2 text-sm font-semibold text-emerald-800">
             <CheckCircle2 className="h-4 w-4" /> Submission successful
           </p>
-          <p className="mt-1 text-[13px] text-emerald-800/90">
+          <p className="mt-1 text-sm text-emerald-800/90">
             {justSubmitted.status === "LATE" ? "Submitted late" : "Submitted on time"} on{" "}
             {formatIST(justSubmitted.submittedAt)} · {justSubmitted.fileCount} file(s). You can view
             it from the Submissions section.
@@ -309,7 +309,7 @@ export function SubmissionWorkspace({ detail }: { detail: StudentTaskDetail }) {
                   <FileText className="h-4 w-4" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[13px] font-medium text-slate-800">{f.originalName}</p>
+                  <p className="truncate text-sm font-medium text-slate-800">{f.originalName}</p>
                   <p className="text-xs text-surface-400">
                     {formatBytes(f.sizeBytes)} · uploaded {formatIST(f.createdAt)}
                   </p>
@@ -362,7 +362,7 @@ export function SubmissionWorkspace({ detail }: { detail: StudentTaskDetail }) {
           </div>
         ) : (
           !justSubmitted && (
-            <p className="inline-flex items-center gap-1.5 text-[13px] text-surface-500">
+            <p className="inline-flex items-center gap-1.5 text-sm text-surface-500">
               <Lock className="h-3.5 w-3.5" /> {policy.lockReason ?? "Submission is locked."}
             </p>
           )
@@ -393,7 +393,7 @@ export function SubmissionWorkspace({ detail }: { detail: StudentTaskDetail }) {
           </summary>
           <ul className="mt-3 space-y-2">
             {state.versions.map((v: SubmissionVersionItem) => (
-              <li key={v.versionNumber} className="flex items-center justify-between text-[13px]">
+              <li key={v.versionNumber} className="flex items-center justify-between text-sm">
                 <span className="text-surface-600">
                   Version {v.versionNumber} · {v.notes ?? "—"}
                 </span>
@@ -408,7 +408,7 @@ export function SubmissionWorkspace({ detail }: { detail: StudentTaskDetail }) {
               </p>
               <ul className="mt-2 space-y-1.5">
                 {olderFiles.map((f) => (
-                  <li key={f.id} className="flex items-center justify-between text-[13px]">
+                  <li key={f.id} className="flex items-center justify-between text-sm">
                     <span className="truncate text-surface-500">
                       v{f.versionNumber} · {f.originalName}
                     </span>
@@ -433,7 +433,7 @@ export function SubmissionWorkspace({ detail }: { detail: StudentTaskDetail }) {
             <span className="font-normal text-teal-700">({state.grade.percentage}%)</span>
           </p>
           {state.grade.remarks && (
-            <p className="mt-1 text-[13px] italic text-teal-900/90">“{state.grade.remarks}”</p>
+            <p className="mt-1 text-sm italic text-teal-900/90">“{state.grade.remarks}”</p>
           )}
           <p className="mt-1 text-xs text-teal-700/80">Graded {formatIST(state.grade.gradedAt)}</p>
         </div>

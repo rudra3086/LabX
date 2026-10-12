@@ -9,6 +9,7 @@ import {
   Users,
   FileText,
   Download,
+  FileDown,
   Calendar,
   CheckCircle2,
   Clock,
@@ -76,8 +77,11 @@ export function ClassReportView({
     fetchReport(sessionId, year, month);
   }, [sessionId, year, month]);
 
-  const handleExportCsv = () => {
-    window.open(`/api/reports/export?type=class&id=${sessionId}&year=${year}&month=${month}`, "_blank");
+  const handleExport = (format: "csv" | "pdf") => {
+    window.open(
+      `/api/reports/export?type=class&id=${sessionId}&year=${year}&month=${month}&format=${format}`,
+      "_blank"
+    );
   };
 
   const months = [
@@ -179,9 +183,18 @@ export function ClassReportView({
             Refresh
           </Button>
           <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleExport("pdf")}
+            disabled={loading || !report}
+          >
+            <FileDown className="mr-1.5 h-3.5 w-3.5" />
+            Export PDF
+          </Button>
+          <Button
             variant="primary"
             size="sm"
-            onClick={handleExportCsv}
+            onClick={() => handleExport("csv")}
             disabled={loading || !report}
           >
             <Download className="mr-1.5 h-3.5 w-3.5" />

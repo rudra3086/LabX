@@ -79,20 +79,20 @@ export function SessionTasks({
       {error && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {error}
         </p>
       )}
       {sessionStatus !== "ACTIVE" && (
-        <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-[13px] text-amber-800">
+        <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
           This session is {sessionStatus.toLowerCase()}. Tasks can be prepared as
           drafts, but they can only be published once the session is active.
         </p>
       )}
 
       {tasks.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-surface-200 px-4 py-8 text-center text-[13px] text-surface-400">
+        <p className="rounded-lg border border-dashed border-surface-200 px-4 py-8 text-center text-sm text-surface-400">
           No tasks yet. Add the first practical task for this session.
         </p>
       ) : (
@@ -119,7 +119,7 @@ export function SessionTasks({
                     {t.title}
                   </Link>
                 </TableCell>
-                <TableCell className="text-[13px] text-surface-500">
+                <TableCell className="text-sm text-surface-500">
                   {t.deadline ? (
                     <span className="inline-flex items-center gap-1">
                       <CalendarClock className="h-3.5 w-3.5 text-surface-400" />
@@ -198,14 +198,14 @@ export function SessionTasks({
                     <Link
                       href={`/faculty/tasks/${t.id}/edit`}
                       aria-label={`Edit ${t.title}`}
-                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
+                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
                     >
                       <Pencil className="h-3.5 w-3.5" /> Edit
                     </Link>
                     <Link
                       href={`/faculty/tasks/${t.id}`}
                       aria-label={`Open ${t.title}`}
-                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
+                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
                     >
                       Open <ArrowRight className="h-3.5 w-3.5" />
                     </Link>

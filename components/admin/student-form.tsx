@@ -109,7 +109,7 @@ export function StudentForm({ initial }: { initial?: StudentListItem }) {
           </span>
           <div>
             <h2 className="text-sm font-semibold tracking-tight text-slate-900">Student account created</h2>
-            <p className="mt-1 text-[13px] leading-relaxed text-surface-500">
+            <p className="mt-1 text-sm leading-relaxed text-surface-500">
               Share the one-time temporary password below. The student should change it after first
               sign-in.
             </p>
@@ -142,7 +142,7 @@ export function StudentForm({ initial }: { initial?: StudentListItem }) {
       {formError && (
         <p
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] font-medium text-rose-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
         >
           <CircleAlert className="h-3.5 w-3.5" /> {formError}
         </p>

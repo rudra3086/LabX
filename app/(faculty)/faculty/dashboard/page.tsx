@@ -88,7 +88,7 @@ export default async function FacultyDashboardPage() {
                     {sub.batch ? ` · ${sub.batch}` : ""}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2.5 text-[13px]">
+                <CardContent className="space-y-2.5 text-sm">
                   <div className="flex items-center justify-between text-surface-600">
                     <span className="inline-flex items-center gap-1.5">
                       <Users className="h-3.5 w-3.5 text-surface-400" /> Students
@@ -159,7 +159,7 @@ export default async function FacultyDashboardPage() {
                       {st.flags.map((f) => (
                         <span
                           key={f}
-                          className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800"
+                          className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[12px] font-medium text-amber-800"
                         >
                           {f}
                         </span>
