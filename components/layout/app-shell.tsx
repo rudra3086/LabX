@@ -75,8 +75,6 @@ export function AppShell({
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-30 lg:flex">
         <Sidebar
           navItems={navItems}
-          user={user}
-          roleLabel={roleLabel}
         />
       </div>
 
@@ -91,15 +89,13 @@ export function AppShell({
           <div className="absolute inset-y-0 left-0">
             <Sidebar
               navItems={navItems}
-              user={user}
-              roleLabel={roleLabel}
               onNavigate={() => setMobileOpen(false)}
             />
           </div>
         </div>
       )}
 
-      <div className="lg:pl-[76px]">
+      <div className="lg:pl-[84px]">
         {/* Teams title / command bar */}
         <header className="sticky top-0 z-20 border-b border-surface-200 bg-white">
           <div className="flex h-14 items-center gap-3 px-3 sm:px-4">

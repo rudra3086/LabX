@@ -79,7 +79,7 @@ export function UserMenu({
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-surface-900">{user.name}</p>
               <p className="truncate text-xs text-surface-500">{user.email}</p>
-              <span className="mt-1 inline-flex rounded-full bg-navy-50 px-2 py-0.5 text-[11px] font-semibold text-navy-700">
+              <span className="mt-1 inline-flex rounded-full bg-navy-50 px-2 py-0.5 text-xs font-semibold text-navy-700">
                 {roleLabel}
               </span>
             </div>

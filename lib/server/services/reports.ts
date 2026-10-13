@@ -153,6 +153,9 @@ const MONTH_NAMES = [
 ];
 
 export function getMonthBounds(year: number, month: number): { start: Date; end: Date; name: string } {
+  if (!Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) {
+    throw new ApiError("A valid report year and month are required.", 400, "VALIDATION_ERROR");
+  }
   const start = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
   const end = new Date(Date.UTC(year, month, 1, 0, 0, 0));
   const name = MONTH_NAMES[month - 1] ?? "Unknown";
@@ -265,7 +268,7 @@ export async function getStudentMonthlyReport(
         subPerf.missedCount += 1;
       }
 
-      if (sub?.grade) {
+      if (sub?.grade?.isFinalized) {
         totalGraded += 1;
         subPerf.gradedCount += 1;
         subPerf.totalMarksObtained += sub.grade.marks;
@@ -474,7 +477,7 @@ export async function getClassMonthlyReport(
         totalMissedSubmissions += 1;
       }
 
-      if (sub?.grade) {
+      if (sub?.grade?.isFinalized) {
         sGraded += 1;
         totalGradedSubmissions += 1;
         sMarks += sub.grade.marks;
@@ -652,7 +655,7 @@ export async function getPlatformMonthlyReport(
   for (const t of monthTasks) {
     totalSubmissions += t.submissions.length;
     for (const sub of t.submissions) {
-      if (sub.grade) {
+      if (sub.grade?.isFinalized) {
         totalMarks += sub.grade.marks;
         totalMaxMarks += sub.grade.maximumMarks;
       }
@@ -664,18 +667,21 @@ export async function getPlatformMonthlyReport(
 
   const subjectRows = subjects.map((subj) => {
     let sStudentIds = new Set<string>();
+    let sSessionCount = 0;
     let sTasks = 0;
     let sSubmissions = 0;
     let sMarks = 0;
     let sMaxMarks = 0;
 
     for (const sess of subj.sessions) {
+      if (sess.tasks.length === 0) continue;
+      sSessionCount += 1;
       sess.students.forEach((st) => sStudentIds.add(st.studentId));
       for (const t of sess.tasks) {
         sTasks += 1;
         sSubmissions += t.submissions.length;
         for (const sub of t.submissions) {
-          if (sub.grade) {
+          if (sub.grade?.isFinalized) {
             sMarks += sub.grade.marks;
             sMaxMarks += sub.grade.maximumMarks;
           }
@@ -691,7 +697,7 @@ export async function getPlatformMonthlyReport(
       code: subj.code,
       name: subj.name,
       department: subj.department,
-      sessionCount: subj.sessions.length,
+      sessionCount: sSessionCount,
       studentCount: sStudentIds.size,
       taskCount: sTasks,
       submissionCount: sSubmissions,

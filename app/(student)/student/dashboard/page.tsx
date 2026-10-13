@@ -75,7 +75,11 @@ export default async function StudentDashboardPage() {
       </Card>
 
       <section className="space-y-3">
-        <SectionHeader title="Upcoming" meta={`${stats.upcoming.length} practicals ahead`} />
+        <SectionHeader
+          title="Upcoming tasks"
+          meta={`${stats.upcoming.length} practicals ahead`}
+          className="text-lg"
+        />
         {stats.upcoming.length === 0 ? (
           <EmptyState
             title="No upcoming practicals"
@@ -88,8 +92,10 @@ export default async function StudentDashboardPage() {
                 <CardHeader>
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <CardTitle className="truncate">{task.title}</CardTitle>
-                      <CardDescription className="mt-1">
+                      <CardTitle className="truncate text-lg">
+                        {task.title}
+                      </CardTitle>
+                      <CardDescription className="mt-1 text-base">
                         {task.subjectCode} · {task.subjectName} · {task.sessionName}
                       </CardDescription>
                     </div>

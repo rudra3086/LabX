@@ -76,7 +76,7 @@ export default async function AdminSettingsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <RunRemindersButton />
-            <div className="rounded-fluent border border-surface-200 bg-surface-50 px-3 py-2 font-mono text-[13px] text-surface-500">
+            <div className="rounded-fluent border border-surface-200 bg-surface-50 px-3 py-2 font-mono text-sm text-surface-500">
               POST /api/jobs/reminders
             </div>
           </CardContent>
@@ -102,7 +102,7 @@ export default async function AdminSettingsPage() {
                   className="rounded-fluent border border-surface-200 bg-surface-50/60 p-3"
                 >
                   <p className="text-xl font-semibold tabular-nums text-surface-900">{s.value}</p>
-                  <p className="mt-0.5 text-[13px] text-surface-500">{s.label}</p>
+                  <p className="mt-0.5 text-sm text-surface-500">{s.label}</p>
                 </div>
               ))}
             </div>

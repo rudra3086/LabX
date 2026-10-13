@@ -159,6 +159,10 @@ export const sessionPatchSchema = z.object({
 });
 
 export const rosterSchema = z.object({
+  batchNames: z.array(z.string().trim().min(1)).min(1, "Select at least one batch.").max(50),
+});
+
+export const rosterRemoveSchema = z.object({
   studentIds: z.array(z.string().min(1)).min(1, "Select at least one student.").max(200),
 });
 

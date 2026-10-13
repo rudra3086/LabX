@@ -66,7 +66,20 @@ export async function PATCH(req: Request, { params }: Ctx) {
     if (p.name !== undefined && p.name !== existing.name) { data.name = p.name; changed.push("name"); }
     if (p.description !== undefined && (p.description ?? null) !== existing.description) { data.description = p.description ?? null; changed.push("description"); }
     if (p.semester !== undefined && p.semester !== existing.semester) { data.semester = p.semester; changed.push("semester"); }
-    if (p.batch !== undefined && (p.batch ?? null) !== existing.batch) { data.batch = p.batch ?? null; changed.push("batch"); }
+    if (p.batch !== undefined && (p.batch ?? null) !== existing.batch) {
+      const enrolledCount = await prisma.sessionStudent.count({
+        where: { sessionId: params.id },
+      });
+      if (enrolledCount > 0) {
+        throw new ApiError(
+          "This session already has students assigned. Remove the current roster before changing its batch.",
+          400,
+          "BATCH_CHANGE_BLOCKED"
+        );
+      }
+      data.batch = p.batch ?? null;
+      changed.push("batch");
+    }
     if (p.startDate !== undefined && (p.startDate ? new Date(p.startDate) : null)?.getTime() !== (existing.startDate ? existing.startDate.getTime() : 0)) {
       data.startDate = p.startDate ? new Date(p.startDate) : null;
       changed.push("startDate");

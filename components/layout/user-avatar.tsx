@@ -2,8 +2,8 @@ import { cn } from "@/lib/utils";
 import { initialsFor } from "./brand-mark";
 
 const SIZES = {
-  sm: "h-8 w-8 text-[12px]",
-  md: "h-9 w-9 text-[13px]",
+  sm: "h-8 w-8 text-xs",
+  md: "h-9 w-9 text-sm",
   lg: "h-11 w-11 text-sm",
 } as const;
 

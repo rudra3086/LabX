@@ -18,7 +18,7 @@ export function BrandMark({
           <span className="block text-base font-semibold tracking-tight text-surface-900">
             SmartLab
           </span>
-          <span className="block text-[12px] font-normal text-surface-400">
+          <span className="block text-xs font-normal text-surface-400">
             Practical Work Platform
           </span>
         </span>

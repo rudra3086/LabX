@@ -2,7 +2,7 @@ import { requireRole } from "@/lib/server/rbac";
 import { ApiError, handleApiError, jsonSuccess } from "@/lib/server/http";
 import { prisma } from "@/lib/server/prisma";
 import { recordAudit } from "@/lib/server/audit";
-import { rosterSchema, zodFieldErrors } from "@/lib/schemas";
+import { rosterRemoveSchema, rosterSchema, zodFieldErrors } from "@/lib/schemas";
 import {
   assertSessionOwnership,
   getSessionStudents,
@@ -34,11 +34,27 @@ export async function POST(req: Request, { params }: Ctx) {
     if (!parsed.success) {
       throw new ApiError("Validation failed.", 422, "VALIDATION_ERROR", zodFieldErrors(parsed.error));
     }
-    const { studentIds } = parsed.data;
+    const { batchNames } = parsed.data;
+    const session = await prisma.practicalSession.findUnique({
+      where: { id: params.id },
+      select: { batch: true },
+    });
+    if (!session) throw new ApiError("Session not found.", 404, "NOT_FOUND");
+    if (session.batch && batchNames.some((batch) => batch !== session.batch)) {
+      throw new ApiError(
+        `This session is configured for batch "${session.batch}". Create a separate session for another batch.`,
+        400,
+        "BATCH_MISMATCH"
+      );
+    }
 
-    // Only enroll existing, active students.
+    // Enroll all existing active students from the selected batches.
     const students = await prisma.student.findMany({
-      where: { id: { in: studentIds }, status: "ACTIVE", user: { status: "ACTIVE" } },
+      where: {
+        batch: { in: batchNames },
+        status: "ACTIVE",
+        user: { status: "ACTIVE" },
+      },
       select: { id: true },
     });
     if (students.length === 0) {
@@ -55,11 +71,11 @@ export async function POST(req: Request, { params }: Ctx) {
       action: "SESSION_STUDENTS_ADD",
       entityType: "PracticalSession",
       entityId: params.id,
-      metadata: { added: validIds },
+      metadata: { batches: batchNames, added: validIds },
     });
     return jsonSuccess(
       { students: await getSessionStudents(facultyId, params.id) },
-      `Added ${validIds.length} student${validIds.length === 1 ? "" : "s"} to the session.`
+      `Added ${validIds.length} student${validIds.length === 1 ? "" : "s"} from ${batchNames.length === 1 ? "the selected batch" : "the selected batches"}.`
     );
   } catch (err) {
     return handleApiError(err);
@@ -75,7 +91,7 @@ export async function DELETE(req: Request, { params }: Ctx) {
     const body = await req.json().catch(() => {
       throw new ApiError("Invalid JSON body.", 400, "INVALID_BODY");
     });
-    const parsed = rosterSchema.safeParse(body);
+    const parsed = rosterRemoveSchema.safeParse(body);
     if (!parsed.success) {
       throw new ApiError("Validation failed.", 422, "VALIDATION_ERROR", zodFieldErrors(parsed.error));
     }

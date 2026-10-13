@@ -73,12 +73,12 @@ const config: Config = {
       // Teams / Fluent 2 type ramp, nudged up one step for readability.
       // Named sizes are authoritative so the whole app scales together.
       fontSize: {
-        xs: ["13px", { lineHeight: "18px" }],
-        sm: ["14px", { lineHeight: "20px" }],
-        base: ["15px", { lineHeight: "22px" }],
-        lg: ["17px", { lineHeight: "24px" }],
-        xl: ["20px", { lineHeight: "28px" }],
-        "2xl": ["24px", { lineHeight: "32px" }],
+        xs: ["13px", { lineHeight: "19px" }],
+        sm: ["16px", { lineHeight: "24px" }],
+        base: ["17px", { lineHeight: "26px" }],
+        lg: ["19px", { lineHeight: "28px" }],
+        xl: ["22px", { lineHeight: "32px" }],
+        "2xl": ["26px", { lineHeight: "36px" }],
         "3xl": ["30px", { lineHeight: "36px" }],
         "4xl": ["36px", { lineHeight: "40px" }],
       },

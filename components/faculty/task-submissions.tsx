@@ -209,7 +209,7 @@ export function TaskSubmissions({
             {f.label}
             <span
               className={cn(
-                "rounded-full px-1.5 text-[12px] tabular-nums",
+                "rounded-full px-1.5 text-xs tabular-nums",
                 filter === f.id ? "bg-white/20 text-white" : "bg-surface-100 text-surface-500"
               )}
             >

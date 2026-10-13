@@ -41,7 +41,7 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
             {tab.count !== undefined && (
               <span
                 className={cn(
-                  "rounded-full px-1.5 text-[11px] font-semibold tabular-nums",
+                  "rounded-full px-1.5 text-xs font-semibold tabular-nums",
                   isActive
                     ? "bg-navy-600 text-white"
                     : "bg-surface-200 text-surface-600"

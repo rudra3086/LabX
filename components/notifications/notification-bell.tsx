@@ -83,7 +83,7 @@ export function NotificationBell({ role }: { role: string }) {
               <button
                 type="button"
                 onClick={markAllAsRead}
-                className="text-[12px] font-medium text-navy-700 hover:underline"
+                className="text-xs font-medium text-navy-700 hover:underline"
               >
                 Mark all read
               </button>
@@ -108,7 +108,7 @@ export function NotificationBell({ role }: { role: string }) {
                     <Link
                       href={n.link}
                       onClick={() => setOpen(false)}
-                      className="mt-1 inline-flex items-center gap-1 text-[12px] font-medium text-navy-700 hover:underline"
+                      className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-navy-700 hover:underline"
                     >
                       Open
                       <ExternalLink className="h-2.5 w-2.5" />

@@ -82,7 +82,7 @@ export function StatCard({
         {trend && (
           <span
             className={cn(
-              "mb-0.5 inline-flex items-center gap-0.5 text-[12px] font-semibold tabular-nums",
+              "mb-0.5 inline-flex items-center gap-0.5 text-xs font-semibold tabular-nums",
               TREND_STYLES[trend.direction]
             )}
           >

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, UserPlus, X, CircleAlert, Loader2 } from "lucide-react";
+import { Search, UsersRound, X, CircleAlert, Loader2 } from "lucide-react";
 import type { SessionStudentRow } from "@/lib/server/services/faculty";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ export function SessionRoster({
 }) {
   const [students, setStudents] = useState(initialStudents);
   const [candidates, setCandidates] = useState(initialCandidates);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [selectedBatches, setSelectedBatches] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +47,12 @@ export function SessionRoster({
     if (candidatesBody.success) setCandidates(candidatesBody.data.candidates);
   };
 
+  const batches = useMemo(
+    () =>
+      Array.from(new Set(candidates.map((candidate) => candidate.batch).filter(Boolean) as string[])).sort(),
+    [candidates]
+  );
+
   const filteredCandidates = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return candidates;
@@ -58,31 +64,31 @@ export function SessionRoster({
     );
   }, [candidates, search]);
 
-  const toggle = (id: string) => {
-    setSelected((prev) => {
+  const toggleBatch = (batch: string) => {
+    setSelectedBatches((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(batch)) next.delete(batch);
+      else next.add(batch);
       return next;
     });
   };
 
   const addSelected = async () => {
-    if (selected.size === 0) return;
+    if (selectedBatches.size === 0) return;
     setBusy(true);
     setError(null);
     try {
       const res = await fetch(`/api/faculty/sessions/${sessionId}/students`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentIds: Array.from(selected) }),
+        body: JSON.stringify({ batchNames: Array.from(selectedBatches) }),
       });
       const body = await res.json();
       if (!res.ok || !body.success) {
         setError(body.error?.message ?? "Could not add students.");
         return;
       }
-      setSelected(new Set());
+      setSelectedBatches(new Set());
       await reload();
     } catch {
       setError("Network error while adding students.");
@@ -135,7 +141,7 @@ export function SessionRoster({
         {students.length === 0 ? (
           <EmptyState
             title="No students enrolled"
-            description="Add students from the available list below to build this session's roster."
+            description="Assign complete batches to this session. Every active student in a selected batch will receive this session's tasks."
           />
         ) : (
           <Table>
@@ -189,61 +195,58 @@ export function SessionRoster({
               variant="accent"
               size="sm"
               onClick={addSelected}
-              disabled={busy || selected.size === 0}
-              leftIcon={
-                busy ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                ) : (
-                  <UserPlus className="h-3.5 w-3.5" />
-                )
-              }
+              disabled={busy || selectedBatches.size === 0}
+              leftIcon={busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <UsersRound className="h-3.5 w-3.5" />}
             >
-              Add selected{selected.size > 0 ? ` (${selected.size})` : ""}
+              Assign selected batch{selectedBatches.size === 1 ? "" : "es"}{selectedBatches.size > 0 ? ` (${selectedBatches.size})` : ""}
             </Button>
           </div>
 
           <div className="w-full max-w-sm">
             <Input
-              placeholder="Search students by name, roll no or email…"
+              placeholder="Search available batches or students…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               leftElement={<Search className="h-4 w-4" />}
-              aria-label="Search students"
+              aria-label="Search batches"
             />
           </div>
 
-          {filteredCandidates.length === 0 ? (
+          {batches.length === 0 ? (
             <p className="rounded-lg border border-dashed border-surface-200 px-4 py-6 text-center text-sm text-surface-400">
               {candidates.length === 0
-                ? "All active students are already enrolled in this session."
-                : "No students match your search."}
+                ? "All active students with a batch are already enrolled in this session."
+                : "No batches are available."}
             </p>
           ) : (
             <div className="max-h-80 overflow-y-auto rounded-lg border border-surface-200 bg-white shadow-card">
               <ul className="divide-y divide-surface-100">
-                {filteredCandidates.map((c) => {
-                  const checked = selected.has(c.id);
-                  return (
-                    <li key={c.id}>
-                      <label className="flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-surface-50">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => toggle(c.id)}
-                          className="h-4 w-4 rounded border-surface-300 text-navy-700 focus:ring-navy-600"
-                        />
-                        <span className="font-mono text-sm text-navy-700">{c.rollNumber}</span>
-                        <span className="font-medium text-slate-800">{c.name}</span>
-                        <span className="text-xs text-surface-400">{c.email}</span>
-                        {c.batch && (
-                          <Badge variant="slate" size="sm" className="ml-auto">
-                            {c.batch}
-                          </Badge>
-                        )}
-                      </label>
-                    </li>
-                  );
-                })}
+                {batches
+                  .filter(
+                      (batch) =>
+                        batch.toLowerCase().includes(search.trim().toLowerCase()) ||
+                        filteredCandidates.some((candidate) => candidate.batch === batch)
+                  )
+                  .map((batch) => {
+                      const checked = selectedBatches.has(batch);
+                      const count = candidates.filter((candidate) => candidate.batch === batch).length;
+                      return (
+                        <li key={batch}>
+                          <label className="flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-surface-50">
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => toggleBatch(batch)}
+                              className="h-4 w-4 rounded border-surface-300 text-navy-700 focus:ring-navy-600"
+                            />
+                            <span className="font-medium text-slate-800">Batch {batch}</span>
+                            <Badge variant="slate" size="sm" className="ml-auto">
+                              {count} student{count === 1 ? "" : "s"}
+                            </Badge>
+                          </label>
+                        </li>
+                      );
+                  })}
               </ul>
             </div>
           )}

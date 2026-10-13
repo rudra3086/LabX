@@ -185,7 +185,7 @@ export default async function FacultyDashboardPage() {
                       {st.flags.map((f) => (
                         <span
                           key={f}
-                          className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[12px] font-medium text-amber-800"
+                          className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-800"
                         >
                           {f}
                         </span>

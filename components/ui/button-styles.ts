@@ -29,9 +29,9 @@ export const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
 };
 
 export const BUTTON_SIZES: Record<ButtonSize, string> = {
-  sm: "text-[13px] px-3 py-1.5 gap-1.5 h-8",
-  md: "text-sm px-4 py-1.5 gap-2 h-9",
-  lg: "text-sm px-5 py-2 gap-2 h-10",
+  sm: "text-sm px-3 py-1.5 gap-1.5 h-8",
+  md: "text-base px-4 py-1.5 gap-2 h-10",
+  lg: "text-base px-5 py-2 gap-2 h-11",
 };
 
 export type ButtonLikeProps = ButtonHTMLAttributes<HTMLButtonElement> &

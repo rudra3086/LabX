@@ -142,6 +142,18 @@ export interface NavItem {
   activeMatch: string; // path prefix used to highlight current nav item
 }
 
+export type CalendarEventType = "SCHEDULE" | "DEADLINE";
+
+export interface CalendarEvent {
+  id: string;
+  type: CalendarEventType;
+  title: string;
+  date: string;
+  endDate?: string | null;
+  subtitle: string;
+  href: string;
+}
+
 // ----------------------------------------------------------------------------
 // Student side — submissions, task detail, grades (spec §21, §24–§28, §37)
 // ----------------------------------------------------------------------------

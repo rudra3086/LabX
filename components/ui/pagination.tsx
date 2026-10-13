@@ -42,7 +42,7 @@ export function Pagination({
         className
       )}
     >
-      <p className="text-[13px] tabular-nums text-surface-500">
+      <p className="text-sm tabular-nums text-surface-500">
         {total === 0 ? "No results" : `${start}–${end} of ${total}`}
       </p>
       <div className="flex items-center gap-1">
@@ -60,7 +60,7 @@ export function Pagination({
             <span
               key={`e-${i}`}
               aria-hidden="true"
-              className="px-1 text-[13px] text-surface-400"
+              className="px-1 text-sm text-surface-400"
             >
               …
             </span>
@@ -71,7 +71,7 @@ export function Pagination({
               onClick={() => onPageChange(p)}
               aria-current={p === page ? "page" : undefined}
               className={cn(
-                "h-8 min-w-8 px-2 text-[13px] font-medium tabular-nums transition-colors",
+                "h-8 min-w-8 px-2 text-sm font-medium tabular-nums transition-colors",
                 p === page
                   ? "rounded-fluent bg-navy-600 text-white"
                   : "rounded-fluent text-surface-600 hover:bg-surface-100"

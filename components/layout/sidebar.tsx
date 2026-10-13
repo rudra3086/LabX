@@ -15,10 +15,10 @@ import {
   Menu,
   X,
   Settings,
+  CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { NavItem, PublicUser } from "@/types";
-import { UserAvatar } from "./user-avatar";
+import { NavItem } from "@/types";
 
 const ICONS: Record<string, typeof LayoutDashboard> = {
   "layout-dashboard": LayoutDashboard,
@@ -33,6 +33,7 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
   notifications: Bell,
   profile: UserCircle,
   settings: Settings,
+  calendar: CalendarDays,
 };
 
 /**
@@ -42,18 +43,15 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
  */
 export function Sidebar({
   navItems,
-  user,
   onNavigate,
 }: {
   navItems: NavItem[];
-  user: PublicUser;
-  roleLabel: string;
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full w-[76px] flex-col items-center border-r border-surface-200 bg-[#EBEBEB] py-2">
+    <aside className="flex h-full w-[84px] flex-col items-center border-r border-surface-200 bg-[#EBEBEB] py-2">
       <Link
         href="/"
         aria-label="SmartLab home"
@@ -63,7 +61,7 @@ export function Sidebar({
       </Link>
 
       <nav
-        className="flex w-full flex-1 flex-col items-stretch gap-0.5 overflow-y-auto pt-2"
+        className="flex w-full flex-1 flex-col items-stretch gap-0.5 overflow-y-auto overflow-x-hidden pt-2"
         aria-label="Main navigation"
       >
         {navItems.map((item) => {
@@ -76,7 +74,7 @@ export function Sidebar({
               onClick={onNavigate}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "group relative mx-1 flex flex-col items-center gap-1 rounded-fluent px-1 py-2.5 transition-colors",
+                "group relative mx-1 flex w-full flex-col items-center gap-1 rounded-fluent px-1.5 py-2.5 transition-colors",
                 active
                   ? "bg-white text-navy-700 shadow-card"
                   : "text-surface-600 hover:bg-white/60 hover:text-surface-900"
@@ -96,7 +94,7 @@ export function Sidebar({
               />
               <span
                 className={cn(
-                  "text-center text-xs leading-tight",
+                  "max-w-[68px] truncate text-center text-sm leading-tight",
                   active ? "font-semibold" : "font-normal"
                 )}
               >
@@ -107,15 +105,6 @@ export function Sidebar({
         })}
       </nav>
 
-      <div className="mt-1 flex flex-col items-center gap-1 border-t border-surface-300/60 px-1 pt-2.5">
-        <UserAvatar name={user.name} size="md" showPresence />
-        <span
-          className="max-w-full truncate text-[11px] font-medium text-surface-500"
-          title={user.name}
-        >
-          {user.name.split(" ")[0]}
-        </span>
-      </div>
     </aside>
   );
 }

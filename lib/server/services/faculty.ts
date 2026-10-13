@@ -218,11 +218,12 @@ export async function getEnrollableStudents(
   facultyId: string,
   sessionId: string
 ): Promise<SessionStudentRow[]> {
-  await assertSessionOwnership(facultyId, sessionId);
+  const session = await assertSessionOwnership(facultyId, sessionId);
   const rows = await prisma.student.findMany({
     where: {
       status: "ACTIVE",
       user: { status: "ACTIVE" },
+      batch: session.batch ? session.batch : { not: null },
       NOT: { sessionLinks: { some: { sessionId } } },
     },
     include: { user: { select: { name: true, email: true } } },
