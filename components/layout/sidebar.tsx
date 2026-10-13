@@ -14,12 +14,11 @@ import {
   UserCircle,
   Menu,
   X,
-  LogOut,
   Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NavItem, PublicUser } from "@/types";
-import { initialsFor } from "./brand-mark";
+import { UserAvatar } from "./user-avatar";
 
 const ICONS: Record<string, typeof LayoutDashboard> = {
   "layout-dashboard": LayoutDashboard,
@@ -45,13 +44,11 @@ export function Sidebar({
   navItems,
   user,
   onNavigate,
-  onLogout,
 }: {
   navItems: NavItem[];
   user: PublicUser;
   roleLabel: string;
   onNavigate?: () => void;
-  onLogout?: () => void;
 }) {
   const pathname = usePathname();
 
@@ -110,25 +107,14 @@ export function Sidebar({
         })}
       </nav>
 
-      <div className="mt-1 flex flex-col items-center gap-1 border-t border-surface-300/60 px-1 pt-2">
+      <div className="mt-1 flex flex-col items-center gap-1 border-t border-surface-300/60 px-1 pt-2.5">
+        <UserAvatar name={user.name} size="md" showPresence />
         <span
-          aria-hidden="true"
+          className="max-w-full truncate text-[11px] font-medium text-surface-500"
           title={user.name}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-600 text-[13px] font-semibold text-white"
         >
-          {initialsFor(user.name)}
+          {user.name.split(" ")[0]}
         </span>
-        {onLogout && (
-          <button
-            type="button"
-            onClick={onLogout}
-            aria-label="Log out"
-            title="Log out"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-fluent text-surface-500 transition-colors hover:bg-white/70 hover:text-surface-800"
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
-        )}
       </div>
     </aside>
   );

@@ -2,11 +2,10 @@
 
 import { useState, useTransition } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Loader2, Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Search } from "lucide-react";
 import { NavItem, PublicUser } from "@/types";
 import { Sidebar, MobileNavToggle } from "./sidebar";
-import { initialsFor } from "./brand-mark";
+import { UserMenu } from "./user-menu";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 
 function pageTitleFor(pathname: string): string {
@@ -78,7 +77,6 @@ export function AppShell({
           navItems={navItems}
           user={user}
           roleLabel={roleLabel}
-          onLogout={() => void handleLogout()}
         />
       </div>
 
@@ -95,7 +93,6 @@ export function AppShell({
               navItems={navItems}
               user={user}
               roleLabel={roleLabel}
-              onLogout={() => void handleLogout()}
               onNavigate={() => setMobileOpen(false)}
             />
           </div>
@@ -135,19 +132,12 @@ export function AppShell({
             <div className="ml-auto flex items-center gap-1 md:ml-0">
               <NotificationBell role={user.role} />
               <span className="mx-1 hidden h-6 w-px bg-surface-200 md:block" />
-              <span className="hidden items-center gap-2 md:flex">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-600 text-[12px] font-semibold text-white">
-                  {initialsFor(user.name)}
-                </span>
-              </span>
-              <button
-                onClick={() => void handleLogout()}
-                disabled={isLoggingOut}
-                className="inline-flex h-9 items-center gap-1.5 rounded-fluent px-3 text-sm font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-surface-900 disabled:opacity-60"
-              >
-                {isLoggingOut ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
-                <span className="hidden sm:inline">Log out</span>
-              </button>
+              <UserMenu
+                user={user}
+                roleLabel={roleLabel}
+                onLogout={() => void handleLogout()}
+                isLoggingOut={isLoggingOut}
+              />
             </div>
           </div>
         </header>

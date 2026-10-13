@@ -1,7 +1,18 @@
-import { CheckCircle2, ListTodo, AlertTriangle, CalendarClock, XCircle, Award } from "lucide-react";
+import {
+  CheckCircle2,
+  ListTodo,
+  AlertTriangle,
+  CalendarClock,
+  XCircle,
+  Award,
+  FileText,
+  Trophy,
+} from "lucide-react";
 import { getCurrentUser } from "@/lib/server/rbac";
 import { getStudentDashboardStats } from "@/lib/server/services/dashboard";
 import { StatCard } from "@/components/ui/stat-card";
+import { CommandBar } from "@/components/ui/command-bar";
+import { ButtonLink } from "@/components/ui/button-link";
 import {
   Card,
   CardContent,
@@ -20,18 +31,34 @@ export default async function StudentDashboardPage() {
   const firstName = user!.name.split(" ")[0];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
+        eyebrow="Student"
         title={`${greetingFor()}, ${firstName}`}
-        description="Your practical workload, pending deadlines and latest grades."
+        description="Your practical workload, deadlines and results in one place."
       />
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
-        <StatCard title="Assigned" value={stats.assignedTasks} icon={<ListTodo className="h-3.5 w-3.5" />} />
-        <StatCard title="Submitted" value={stats.submittedTasks} icon={<CheckCircle2 className="h-3.5 w-3.5" />} />
-        <StatCard title="Pending" value={stats.pendingTasks} icon={<CalendarClock className="h-3.5 w-3.5" />} />
-        <StatCard title="Late" value={stats.lateSubmissions} icon={<AlertTriangle className="h-3.5 w-3.5" />} />
-        <StatCard title="Missed" value={stats.missedTasks} icon={<XCircle className="h-3.5 w-3.5" />} />
+      <CommandBar
+        actions={
+          <ButtonLink href="/student/tasks" size="sm" icon={<ListTodo className="h-4 w-4" />}>
+            View tasks
+          </ButtonLink>
+        }
+      >
+        <ButtonLink href="/student/submissions" variant="ghost" size="sm" icon={<FileText className="h-4 w-4" />}>
+          Submissions
+        </ButtonLink>
+        <ButtonLink href="/student/grades" variant="ghost" size="sm" icon={<Trophy className="h-4 w-4" />}>
+          Grades
+        </ButtonLink>
+      </CommandBar>
+
+      <div className="grid grid-cols-2 gap-4 xl:grid-cols-5">
+        <StatCard title="Assigned" value={stats.assignedTasks} icon={<ListTodo className="h-4 w-4" />} tone="brand" />
+        <StatCard title="Submitted" value={stats.submittedTasks} icon={<CheckCircle2 className="h-4 w-4" />} tone="emerald" />
+        <StatCard title="Pending" value={stats.pendingTasks} icon={<CalendarClock className="h-4 w-4" />} tone="sky" />
+        <StatCard title="Late" value={stats.lateSubmissions} icon={<AlertTriangle className="h-4 w-4" />} tone="amber" />
+        <StatCard title="Missed" value={stats.missedTasks} icon={<XCircle className="h-4 w-4" />} tone="rose" />
       </div>
 
       <Card className="flex items-center gap-4 p-5">

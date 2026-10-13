@@ -1,14 +1,17 @@
 import {
-  Inbox,
-  ClipboardCheck,
-  AlertTriangle,
   CalendarClock,
-  Users,
+  ClipboardCheck,
   FileText,
+  Plus,
+  Users,
+  AlertTriangle,
+  Inbox,
 } from "lucide-react";
 import { getCurrentUser } from "@/lib/server/rbac";
 import { getFacultyDashboardStats } from "@/lib/server/services/dashboard";
 import { StatCard } from "@/components/ui/stat-card";
+import { CommandBar } from "@/components/ui/command-bar";
+import { ButtonLink } from "@/components/ui/button-link";
 import {
   Card,
   CardContent,
@@ -33,35 +36,58 @@ export default async function FacultyDashboardPage() {
   const stats = await getFacultyDashboardStats(facultyId);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
+        eyebrow="Teaching"
         title={`Welcome, ${user!.name.split(" ")[0]}`}
         description="Pending work, deadlines and student performance across your practical sessions."
       />
+
+      <CommandBar
+        actions={
+          <ButtonLink href="/faculty/sessions/create" size="sm" icon={<Plus className="h-4 w-4" />}>
+            New session
+          </ButtonLink>
+        }
+      >
+        <ButtonLink href="/faculty/sessions" variant="ghost" size="sm" icon={<CalendarClock className="h-4 w-4" />}>
+          Sessions
+        </ButtonLink>
+        <ButtonLink href="/faculty/tasks" variant="ghost" size="sm" icon={<FileText className="h-4 w-4" />}>
+          Tasks
+        </ButtonLink>
+        <ButtonLink href="/faculty/reports" variant="ghost" size="sm" icon={<ClipboardCheck className="h-4 w-4" />}>
+          Reports
+        </ButtonLink>
+      </CommandBar>
 
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
         <StatCard
           title="Pending submissions"
           value={stats.pendingSubmissions}
-          icon={<Inbox className="h-3.5 w-3.5" />}
+          icon={<Inbox className="h-4 w-4" />}
+          tone="amber"
           subtitle="Students who have not submitted"
         />
         <StatCard
           title="Ungraded"
           value={stats.ungradedSubmissions}
-          icon={<ClipboardCheck className="h-3.5 w-3.5" />}
+          icon={<ClipboardCheck className="h-4 w-4" />}
+          tone="brand"
           subtitle="Submitted work awaiting marks"
         />
         <StatCard
           title="Late"
           value={stats.lateSubmissions}
-          icon={<AlertTriangle className="h-3.5 w-3.5" />}
+          icon={<AlertTriangle className="h-4 w-4" />}
+          tone="rose"
           subtitle="Submitted after the deadline"
         />
         <StatCard
           title="Upcoming deadlines"
           value={stats.upcomingDeadlines}
-          icon={<CalendarClock className="h-3.5 w-3.5" />}
+          icon={<CalendarClock className="h-4 w-4" />}
+          tone="sky"
           subtitle="Published tasks closing soon"
         />
       </div>
