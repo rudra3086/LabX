@@ -1,0 +1,49 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Typecheck LabX",
+			"type": "shell",
+			"command": "npm run typecheck",
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			]
+		},
+		{
+			"label": "Generate Prisma client",
+			"type": "shell",
+			"command": "npx prisma generate",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Generate Prisma types",
+			"type": "shell",
+			"command": "npx prisma generate --no-engine",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Review changed files",
+			"type": "shell",
+			"command": "git --no-pager diff --stat",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check worktree status",
+			"type": "shell",
+			"command": "git status --short",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Inspect generated config",
+			"type": "shell",
+			"command": "git --no-pager diff -- .vscode; Get-ChildItem .vscode -Force | Select-Object -ExpandProperty Name",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
