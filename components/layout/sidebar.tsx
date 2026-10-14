@@ -94,7 +94,7 @@ export function Sidebar({
               />
               <span
                 className={cn(
-                  "max-w-[68px] truncate text-center text-sm leading-tight",
+                  "max-w-[68px] truncate text-center text-xs leading-tight",
                   active ? "font-semibold" : "font-normal"
                 )}
               >

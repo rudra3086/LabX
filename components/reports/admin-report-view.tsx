@@ -144,13 +144,15 @@ export function AdminReportView({
             </div>
 
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
+              className="h-9 w-9 rounded-md p-0 shadow-none"
+              aria-label="Refresh platform report"
+              title="Refresh platform report"
               onClick={() => fetchPlatformReport(year, month)}
               disabled={loading}
             >
-              <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
-              Refresh
+              <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
             </Button>
           </div>
 

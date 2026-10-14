@@ -108,34 +108,48 @@ export function StudentReportView({
           </select>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
+            className="h-9 w-9 rounded-md p-0 shadow-none"
+            aria-label="Refresh report"
+            title="Refresh report"
             onClick={() => fetchReport(year, month)}
             disabled={loading}
           >
-            <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
-            Refresh
+            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleExport("pdf")}
-            disabled={loading || !report || report.status === "NO DATA"}
-          >
-            <FileDown className="mr-1.5 h-3.5 w-3.5" />
-            Export PDF
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => handleExport("csv")}
-            disabled={loading || !report || report.status === "NO DATA"}
-          >
-            <Download className="mr-1.5 h-3.5 w-3.5" />
-            Export CSV
-          </Button>
+          <div className="group relative">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-9 w-9 rounded-md p-0 shadow-none"
+              aria-label="Download report"
+              title="Download report"
+              disabled={loading || !report || report.status === "NO DATA"}
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+            <div className="invisible absolute right-0 top-full z-20 mt-1 w-40 rounded-md border border-surface-200 bg-white p-1 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+              <button
+                type="button"
+                onClick={() => handleExport("pdf")}
+                className="flex w-full items-center rounded px-3 py-2 text-left text-sm text-surface-700 hover:bg-surface-100"
+              >
+                <FileDown className="mr-2 h-4 w-4" />
+                Download PDF
+              </button>
+              <button
+                type="button"
+                onClick={() => handleExport("csv")}
+                className="flex w-full items-center rounded px-3 py-2 text-left text-sm text-surface-700 hover:bg-surface-100"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download CSV
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
