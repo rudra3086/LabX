@@ -17,5 +17,37 @@ services:
       timeout: 5s
       retries: 10
 
+  qdrant:
+    image: qdrant/qdrant:v1.13.2
+    container_name: labx-qdrant
+    restart: unless-stopped
+    volumes:
+      - labx_qdrant_data:/qdrant/storage
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: labx-ollama
+    restart: unless-stopped
+    volumes:
+      - labx_ollama_data:/root/.ollama
+
+  rag-api:
+    build:
+      context: ./rag-api
+    container_name: labx-rag-api
+    restart: unless-stopped
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.2:3b}
+      INTERNAL_TOKEN: ${RAG_INTERNAL_TOKEN:-change-me}
+    depends_on:
+      - qdrant
+      - ollama
+    ports:
+      - "8000:8000"
+
 volumes:
   smartlab_pgdata:
+  labx_qdrant_data:
+  labx_ollama_data:

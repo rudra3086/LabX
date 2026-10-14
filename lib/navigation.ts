@@ -21,6 +21,7 @@ export const NAV_FACULTY: NavItem[] = [
   { label: "Calendar", href: "/faculty/calendar", icon: "calendar", activeMatch: "/faculty/calendar" },
   { label: "Students", href: "/faculty/students", icon: "students", activeMatch: "/faculty/students" },
   { label: "Reports", href: "/faculty/reports", icon: "reports", activeMatch: "/faculty/reports" },
+  { label: "AI Viva", href: "/faculty/ai-viva", icon: "tasks", activeMatch: "/faculty/ai-viva" },
   { label: "Notifications", href: "/faculty/notifications", icon: "notifications", activeMatch: "/faculty/notifications" },
 ];
 
@@ -32,5 +33,6 @@ export const NAV_STUDENT: NavItem[] = [
   { label: "Submissions", href: "/student/submissions", icon: "submissions", activeMatch: "/student/submissions" },
   { label: "Grades", href: "/student/grades", icon: "grades", activeMatch: "/student/grades" },
   { label: "Reports", href: "/student/reports", icon: "reports", activeMatch: "/student/reports" },
+  { label: "AI Viva", href: "/student/ai-viva", icon: "tasks", activeMatch: "/student/ai-viva" },
   { label: "Notifications", href: "/student/notifications", icon: "notifications", activeMatch: "/student/notifications" },
 ];
