@@ -46,6 +46,7 @@ export async function PATCH(req: Request, { params }: Ctx) {
     if (p.semester !== undefined && p.semester !== existing.semester) { studentData.semester = p.semester; changed.push("semester"); }
     if (p.department !== undefined && p.department !== existing.department) { studentData.department = p.department; changed.push("department"); }
     if (p.batch !== undefined && (p.batch ?? null) !== existing.batch) { studentData.batch = p.batch ?? null; changed.push("batch"); }
+    if (p.subjectIds !== undefined) changed.push("subjectIds");
 
     if (changed.length === 0) {
       return jsonSuccess({ student: await getAdminStudentDetail(params.id) }, "No changes.");
@@ -58,6 +59,14 @@ export async function PATCH(req: Request, { params }: Ctx) {
         }
         if (Object.keys(studentData).length) {
           await tx.student.update({ where: { id: params.id }, data: studentData });
+        }
+        if (p.subjectIds !== undefined) {
+          await tx.studentSubject.deleteMany({ where: { studentId: params.id } });
+          if (p.subjectIds.length) {
+            await tx.studentSubject.createMany({
+              data: p.subjectIds.map((subjectId) => ({ studentId: params.id, subjectId })),
+            });
+          }
         }
       });
     } catch (err) {

@@ -44,6 +44,48 @@
 			"command": "git --no-pager diff -- .vscode; Get-ChildItem .vscode -Force | Select-Object -ExpandProperty Name",
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "Apply pending Prisma migrations",
+			"type": "shell",
+			"command": "npx prisma migrate deploy",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Regenerate Prisma client",
+			"type": "shell",
+			"command": "npx prisma generate",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify Prisma migration status",
+			"type": "shell",
+			"command": "npx prisma migrate status",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Find Node processes locking Prisma",
+			"type": "shell",
+			"command": "cmd.exe /c \"tasklist /v /fo csv | findstr /i node\"",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Stop locked Node process",
+			"type": "shell",
+			"command": "Stop-Process -Id 15780",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Regenerate Prisma client after unlock",
+			"type": "shell",
+			"command": "npx prisma generate",
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }

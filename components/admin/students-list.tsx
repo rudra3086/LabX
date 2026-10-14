@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, Pencil, CircleAlert } from "lucide-react";
+import { Search, Pencil, CircleAlert, KeyRound } from "lucide-react";
 import type { StudentListItem } from "@/lib/server/services/admin";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -19,28 +19,70 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ResetPasswordDialog } from "@/components/admin/reset-password-dialog";
 
 export function StudentsList({ items }: { items: StudentListItem[] }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<"ALL" | "ACTIVE" | "INACTIVE">("ALL");
+  const [semester, setSemester] = useState("ALL");
+  const [batch, setBatch] = useState("ALL");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<StudentListItem | null>(null);
+  const [resetting, setResetting] = useState<StudentListItem | null>(null);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return items.filter(
       (s) =>
         (status === "ALL" || s.status === status) &&
+        (semester === "ALL" || String(s.semester) === semester) &&
+        (batch === "ALL" || (s.batch ?? "UNASSIGNED") === batch) &&
         (!q ||
           s.name.toLowerCase().includes(q) ||
           s.email.toLowerCase().includes(q) ||
           s.studentId.toLowerCase().includes(q) ||
           s.rollNumber.toLowerCase().includes(q) ||
-          s.department.toLowerCase().includes(q))
+          s.department.toLowerCase().includes(q) ||
+          (s.batch ?? "").toLowerCase().includes(q))
     );
-  }, [items, search, status]);
+  }, [items, search, status, semester, batch]);
+
+  const semesterOptions = useMemo(
+    () =>
+      Array.from(new Set(items.map((student) => student.semester)))
+        .sort((a, b) => a - b)
+        .map((value) => ({ value: String(value), label: `Semester ${value}` })),
+    [items]
+  );
+
+  const batchOptions = useMemo(
+    () =>
+      Array.from(new Set(items.map((student) => student.batch).filter(Boolean) as string[]))
+        .sort((a, b) => a.localeCompare(b))
+        .map((value) => ({ value, label: value })),
+    [items]
+  );
+
+  const semesterSummary = useMemo(() => {
+    const activeStudents = items.filter((student) => student.status === "ACTIVE");
+    return Array.from(new Set(activeStudents.map((student) => student.semester)))
+      .sort((a, b) => a - b)
+      .map((value) => {
+        const students = activeStudents.filter((student) => student.semester === value);
+        const counts = new Map<string, number>();
+        for (const student of students) {
+          const key = student.batch ?? "Unassigned";
+          counts.set(key, (counts.get(key) ?? 0) + 1);
+        }
+        return {
+          semester: value,
+          total: students.length,
+          batches: Array.from(counts.entries()).sort(([a], [b]) => a.localeCompare(b)),
+        };
+      });
+  }, [items]);
 
   const setStatusFor = async (student: StudentListItem, next: "ACTIVE" | "INACTIVE") => {
     if (next === "INACTIVE") {
@@ -98,6 +140,28 @@ export function StudentsList({ items }: { items: StudentListItem[] }) {
             ]}
           />
         </div>
+        <div className="w-full sm:w-48">
+          <Select
+            aria-label="Filter by semester"
+            value={semester}
+            onChange={(e) => setSemester(e.target.value)}
+            placeholder="All semesters"
+            options={[{ value: "ALL", label: "All semesters" }, ...semesterOptions]}
+          />
+        </div>
+        <div className="w-full sm:w-56">
+          <Select
+            aria-label="Filter by batch"
+            value={batch}
+            onChange={(e) => setBatch(e.target.value)}
+            placeholder="All batches"
+            options={[
+              { value: "ALL", label: "All batches" },
+              ...batchOptions,
+              { value: "UNASSIGNED", label: "Unassigned batch" },
+            ]}
+          />
+        </div>
       </div>
 
       {error && (
@@ -107,6 +171,44 @@ export function StudentsList({ items }: { items: StudentListItem[] }) {
         >
           <CircleAlert className="h-3.5 w-3.5" /> {error}
         </p>
+      )}
+
+      {semesterSummary.length > 0 && (
+        <div className="rounded-lg border border-surface-200 bg-surface-50 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold text-slate-900">Current batches by semester</h2>
+              <p className="mt-0.5 text-xs text-surface-500">
+                Active students grouped by their assigned batch.
+              </p>
+            </div>
+            <span className="text-xs text-surface-500">
+              {items.filter((student) => student.status === "ACTIVE").length} active students
+            </span>
+          </div>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {semesterSummary.map((group) => (
+              <button
+                key={group.semester}
+                type="button"
+                onClick={() => setSemester(String(group.semester))}
+                className="rounded-md border border-surface-200 bg-white p-3 text-left transition-colors hover:border-navy-300 hover:bg-navy-50"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-slate-900">Semester {group.semester}</span>
+                  <span className="text-xs text-surface-500">{group.total} students</span>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {group.batches.map(([name, count]) => (
+                    <Badge key={name} variant="slate" size="sm">
+                      {name} · {count}
+                    </Badge>
+                  ))}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       {filtered.length === 0 ? (
@@ -128,6 +230,7 @@ export function StudentsList({ items }: { items: StudentListItem[] }) {
               <TableHead>Email</TableHead>
               <TableHead>Semester</TableHead>
               <TableHead>Department</TableHead>
+              <TableHead>Batch</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -141,6 +244,7 @@ export function StudentsList({ items }: { items: StudentListItem[] }) {
                 <TableCell className="text-surface-600">{s.email}</TableCell>
                 <TableCell className="tabular-nums text-surface-600">{s.semester}</TableCell>
                 <TableCell className="text-surface-600">{s.department}</TableCell>
+                <TableCell className="text-surface-600">{s.batch ?? "—"}</TableCell>
                 <TableCell>
                   <Badge variant={s.status === "ACTIVE" ? "emerald" : "slate"} size="sm">
                     {s.status === "ACTIVE" ? "Active" : "Inactive"}
@@ -163,6 +267,15 @@ export function StudentsList({ items }: { items: StudentListItem[] }) {
                     >
                       <Pencil className="h-3.5 w-3.5" /> Edit
                     </Link>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setResetting(s)}
+                      disabled={busyId === s.id}
+                      aria-label={`Reset password for ${s.name}`}
+                    >
+                      <KeyRound className="h-3.5 w-3.5" /> Password
+                    </Button>
                   </div>
                 </TableCell>
               </TableRow>
@@ -179,6 +292,12 @@ export function StudentsList({ items }: { items: StudentListItem[] }) {
         busy={busyId !== null}
         onCancel={() => setConfirming(null)}
         onConfirm={() => confirming && void patchStatus(confirming, "INACTIVE")}
+      />
+      <ResetPasswordDialog
+        name={resetting?.name ?? ""}
+        endpoint={resetting ? `/api/admin/students/${resetting.id}/password` : ""}
+        open={resetting !== null}
+        onClose={() => setResetting(null)}
       />
     </div>
   );

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, Pencil, CircleAlert } from "lucide-react";
+import { Search, Pencil, Trash2, CircleAlert, KeyRound } from "lucide-react";
 import type { FacultyListItem } from "@/lib/server/services/admin";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ResetPasswordDialog } from "@/components/admin/reset-password-dialog";
 
 export function FacultyList({ items }: { items: FacultyListItem[] }) {
   const router = useRouter();
@@ -27,6 +28,8 @@ export function FacultyList({ items }: { items: FacultyListItem[] }) {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<FacultyListItem | null>(null);
+  const [deleting, setDeleting] = useState<FacultyListItem | null>(null);
+  const [resetting, setResetting] = useState<FacultyListItem | null>(null);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -70,6 +73,25 @@ export function FacultyList({ items }: { items: FacultyListItem[] }) {
     } finally {
       setBusyId(null);
       setConfirming(null);
+    }
+  };
+
+  const deleteFaculty = async (faculty: FacultyListItem) => {
+    setBusyId(faculty.id);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/faculty/${faculty.id}`, { method: "DELETE" });
+      const body = await res.json();
+      if (!res.ok || !body.success) {
+        setError(body.error?.message ?? "Delete failed.");
+      } else {
+        router.refresh();
+      }
+    } catch {
+      setError("Network error while deleting the faculty member.");
+    } finally {
+      setBusyId(null);
+      setDeleting(null);
     }
   };
 
@@ -181,6 +203,25 @@ export function FacultyList({ items }: { items: FacultyListItem[] }) {
                     >
                       <Pencil className="h-3.5 w-3.5" /> Edit
                     </Link>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setResetting(f)}
+                      disabled={busyId === f.id}
+                      aria-label={`Reset password for ${f.name}`}
+                    >
+                      <KeyRound className="h-3.5 w-3.5" /> Password
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-rose-600 hover:bg-rose-50 hover:text-rose-700"
+                      onClick={() => setDeleting(f)}
+                      disabled={busyId === f.id}
+                      aria-label={`Delete ${f.name}`}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" /> Delete
+                    </Button>
                   </div>
                 </TableCell>
               </TableRow>
@@ -197,6 +238,22 @@ export function FacultyList({ items }: { items: FacultyListItem[] }) {
         busy={busyId !== null}
         onCancel={() => setConfirming(null)}
         onConfirm={() => confirming && void patchStatus(confirming, "INACTIVE")}
+      />
+
+      <ConfirmDialog
+        open={deleting !== null}
+        title="Permanently delete faculty member?"
+        description={`${deleting?.name ?? ""} and their account will be permanently removed. Their sessions, tasks, uploaded files and grades will also be deleted. This cannot be undone.`}
+        confirmLabel="Delete"
+        busy={busyId !== null}
+        onCancel={() => setDeleting(null)}
+        onConfirm={() => deleting && void deleteFaculty(deleting)}
+      />
+      <ResetPasswordDialog
+        name={resetting?.name ?? ""}
+        endpoint={resetting ? `/api/admin/faculty/${resetting.id}/password` : ""}
+        open={resetting !== null}
+        onClose={() => setResetting(null)}
       />
     </div>
   );

@@ -106,6 +106,7 @@ model Student {
 
   user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessionLinks  SessionStudent[]
+  subjectLinks  StudentSubject[]
   submissions   Submission[]
   monthlyReports MonthlyReport[]
   vivaSessions  VivaSession[]
@@ -149,6 +150,7 @@ model Subject {
   updatedAt   DateTime      @updatedAt
 
   facultyAssignments FacultySubject[]
+  studentAssignments StudentSubject[]
   sessions           PracticalSession[]
   ragDocuments       RagDocument[]
   vivaSessions       VivaSession[]
@@ -167,6 +169,19 @@ model FacultySubject {
   subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
   @@unique([facultyId, subjectId])
+  @@index([subjectId])
+}
+
+model StudentSubject {
+  id        String   @id @default(cuid())
+  studentId String
+  subjectId String
+  createdAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, subjectId])
   @@index([subjectId])
 }
 

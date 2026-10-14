@@ -66,15 +66,19 @@ MAX_FILES_PER_SUBMISSION="5"
 EMAIL_CONFIG=""
 RAG_API_URL="http://localhost:8000"
 RAG_INTERNAL_TOKEN="replace-with-a-shared-internal-token"
-OLLAMA_MODEL="llama3.2:3b"
+GEMINI_API_URL="https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+GEMINI_API_KEY="replace-with-your-gemini-api-key"
+GEMINI_MODEL="gemini-2.0-flash"
 ```
 
 `RAG_INTERNAL_TOKEN` must match the value used by the `rag-api` Docker
-service. The `.env` file is ignored by Git and must be recreated on each PC.
+service. The Gemini API key is passed to the RAG service through
+`GEMINI_API_KEY`. The `.env` file is ignored by Git and must be recreated on
+each PC.
 
 ## 4. Start Docker services
 
-Start PostgreSQL, Qdrant, Ollama, and the internal RAG API:
+Start PostgreSQL, Qdrant, and the internal RAG API:
 
 ```powershell
 docker compose up -d --build
@@ -85,7 +89,6 @@ Expected services:
 
 - `smartlab-postgres`
 - `labx-qdrant`
-- `labx-ollama`
 - `labx-rag-api`
 
 Check the RAG API:
@@ -99,14 +102,6 @@ Expected response:
 ```json
 {"status":"ok"}
 ```
-
-Download the configured Ollama model once:
-
-```powershell
-docker compose exec ollama ollama pull llama3.2:3b
-```
-
-The first pull can take several minutes and requires additional disk space.
 
 ## 5. Create or restore the database
 
@@ -146,8 +141,8 @@ password hashes and academic data.
 ## 6. Preserve Docker vector and model data (optional)
 
 Copying the source folder does not copy Docker named volumes. To preserve
-Qdrant vectors and the Ollama model, either let the new PC rebuild them or
-export the volumes before removing the old PC.
+Qdrant vectors, either let the new PC rebuild them or export the volume before
+removing the old PC.
 
 List the volumes:
 
@@ -158,12 +153,10 @@ docker volume ls
 The LabX volumes are:
 
 - `labx_qdrant_data`
-- `labx_ollama_data`
 - `smartlab_pgdata`
 
 The PostgreSQL volume should be transferred with a database dump instead of
-copying its internal files. Qdrant and Ollama data can be recreated by
-re-indexing PDFs and pulling the Ollama model.
+copying its internal files. Qdrant data can be recreated by re-indexing PDFs.
 
 ## 7. Start LabX
 
@@ -204,7 +197,6 @@ docker compose down -v
 # View logs
 docker compose logs -f postgres
 docker compose logs -f rag-api
-docker compose logs -f ollama
 
 # Check Prisma schema/client
 npx prisma validate
@@ -214,8 +206,8 @@ npx prisma generate
 npm run db:studio
 ```
 
-Do not run `docker compose down -v` unless all PostgreSQL, Qdrant, and Ollama
-data is backed up or intentionally disposable.
+Do not run `docker compose down -v` unless all PostgreSQL and Qdrant data is
+backed up or intentionally disposable.
 
 ## 9. Disk cleanup on the old PC
 
@@ -228,4 +220,3 @@ docker volume ls
 
 Remove only data that is no longer needed. Avoid deleting the PostgreSQL,
 Qdrant, or Ollama volumes before backup.
-

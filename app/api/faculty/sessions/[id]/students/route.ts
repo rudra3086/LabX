@@ -37,7 +37,7 @@ export async function POST(req: Request, { params }: Ctx) {
     const { batchNames } = parsed.data;
     const session = await prisma.practicalSession.findUnique({
       where: { id: params.id },
-      select: { batch: true },
+      select: { batch: true, subjectId: true },
     });
     if (!session) throw new ApiError("Session not found.", 404, "NOT_FOUND");
     if (session.batch && batchNames.some((batch) => batch !== session.batch)) {
@@ -54,6 +54,7 @@ export async function POST(req: Request, { params }: Ctx) {
         batch: { in: batchNames },
         status: "ACTIVE",
         user: { status: "ACTIVE" },
+        subjectLinks: { some: { subjectId: session.subjectId } },
       },
       select: { id: true },
     });

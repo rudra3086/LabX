@@ -7,6 +7,23 @@ export const loginSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
+export const passwordChangeSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Enter your current password."),
+    newPassword: z.string().min(8, "New password must be at least 8 characters.").max(128),
+    confirmPassword: z.string().min(1, "Confirm your new password."),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match.",
+  })
+  .refine((data) => data.currentPassword !== data.newPassword, {
+    path: ["newPassword"],
+    message: "New password must be different from your current password.",
+  });
+
+export type PasswordChangeData = z.infer<typeof passwordChangeSchema>;
+
 // ---------------------------------------------------------------------------
 // Admin CRUD (spec §11, §12, §13)
 // ---------------------------------------------------------------------------
@@ -69,6 +86,7 @@ export const studentUpsertSchema = z.object({
     .nullable()
     .optional()
     .transform((v) => v || null),
+  subjectIds: z.array(z.string()).default([]),
   status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
 });
 
@@ -109,6 +127,7 @@ export const studentPatchSchema = z.object({
   semester: studentUpsertSchema.shape.semester.optional(),
   department: studentUpsertSchema.shape.department.optional(),
   batch: studentUpsertSchema.shape.batch.optional(),
+  subjectIds: z.array(z.string()).optional(),
   status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
 });
 

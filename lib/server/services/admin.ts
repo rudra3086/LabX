@@ -41,6 +41,7 @@ export interface StudentListItem {
   department: string;
   batch: string | null;
   status: "ACTIVE" | "INACTIVE";
+  subjects: { subjectId: string; code: string; name: string }[];
 }
 
 export async function getAdminSubjects(): Promise<SubjectListItem[]> {
@@ -140,7 +141,10 @@ export async function getAdminFacultyDetail(id: string): Promise<FacultyListItem
 export async function getAdminStudents(): Promise<StudentListItem[]> {
   const rows = await prisma.student.findMany({
     orderBy: [{ rollNumber: "asc" }],
-    include: { user: { select: { name: true, email: true, status: true } } },
+    include: {
+      user: { select: { name: true, email: true, status: true } },
+      subjectLinks: { include: { subject: { select: { id: true, code: true, name: true } } } },
+    },
   });
   return rows.map((s) => ({
     id: s.id,
@@ -152,13 +156,21 @@ export async function getAdminStudents(): Promise<StudentListItem[]> {
     department: s.department,
     batch: s.batch,
     status: s.user.status,
+    subjects: s.subjectLinks.map((link) => ({
+      subjectId: link.subject.id,
+      code: link.subject.code,
+      name: link.subject.name,
+    })),
   }));
 }
 
 export async function getAdminStudentDetail(id: string): Promise<StudentListItem> {
   const s = await prisma.student.findUnique({
     where: { id },
-    include: { user: { select: { name: true, email: true, status: true } } },
+    include: {
+      user: { select: { name: true, email: true, status: true } },
+      subjectLinks: { include: { subject: { select: { id: true, code: true, name: true } } } },
+    },
   });
   if (!s) throw new ApiError("Student not found.", 404, "NOT_FOUND");
   return {
@@ -171,6 +183,11 @@ export async function getAdminStudentDetail(id: string): Promise<StudentListItem
     department: s.department,
     batch: s.batch,
     status: s.user.status,
+    subjects: s.subjectLinks.map((link) => ({
+      subjectId: link.subject.id,
+      code: link.subject.code,
+      name: link.subject.name,
+    })),
   };
 }
 

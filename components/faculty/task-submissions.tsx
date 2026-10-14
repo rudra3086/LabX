@@ -229,6 +229,7 @@ export function TaskSubmissions({
           <TableHeader>
             <TableRow>
               <TableHead>Student</TableHead>
+              <TableHead>Batch</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Submitted</TableHead>
               <TableHead className="text-right">Files</TableHead>
@@ -245,6 +246,7 @@ export function TaskSubmissions({
                     <p className="font-medium text-slate-900">{row.name}</p>
                     <p className="font-mono text-xs text-surface-400">{row.rollNumber}</p>
                   </TableCell>
+                  <TableCell className="text-sm text-surface-600">{row.batch ?? "—"}</TableCell>
                   <TableCell>
                     <StatusBadge status={row.status} />
                   </TableCell>

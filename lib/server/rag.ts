@@ -2,16 +2,38 @@ import { readStoredFile } from "./uploads";
 
 const RAG_API_URL = process.env.RAG_API_URL ?? "http://rag-api:8000";
 const RAG_INTERNAL_TOKEN = process.env.RAG_INTERNAL_TOKEN ?? "change-me";
+const RAG_TIMEOUT_MS = 45_000;
 
 async function ragFetch(path: string, init: RequestInit = {}) {
   const headers = new Headers(init.headers);
   headers.set("x-internal-token", RAG_INTERNAL_TOKEN);
-  const response = await fetch(`${RAG_API_URL}${path}`, { ...init, headers });
-  const body = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(body.detail ?? "RAG service request failed.");
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), RAG_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(`${RAG_API_URL}${path}`, {
+      ...init,
+      headers,
+      signal: init.signal ?? controller.signal,
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(body.detail ?? `RAG service error (${response.status})`);
+    }
+    return body;
+  } catch (err: unknown) {
+    if (err instanceof Error && err.name === "AbortError") {
+      throw new Error("RAG service request timed out. Please try again.");
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
   }
-  return body;
+}
+
+export async function checkRagHealth(): Promise<{ status: string; model?: string; llm?: string }> {
+  return ragFetch("/health", { method: "GET" });
 }
 
 export async function indexRagDocument(input: {
@@ -24,10 +46,13 @@ export async function indexRagDocument(input: {
 }) {
   const content = await readStoredFile(input.storageKey);
   const form = new FormData();
-  form.set("file", new Blob([content], { type: "application/pdf" }), input.originalName);
-  for (const [key, value] of Object.entries(input)) {
-    if (key !== "storageKey") form.set(key, value);
-  }
+  form.set("file", new Blob([new Uint8Array(content)], { type: "application/pdf" }), input.originalName);
+  form.set("document_id", input.documentId);
+  form.set("document_name", input.originalName);
+  form.set("subject_id", input.subjectId);
+  form.set("faculty_id", input.facultyId);
+  form.set("unit", input.unit);
+
   return ragFetch("/documents/index", { method: "POST", body: form });
 }
 

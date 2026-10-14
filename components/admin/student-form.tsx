@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CircleAlert, CheckCircle2, Copy } from "lucide-react";
 import { studentUpsertSchema, zodFieldErrors } from "@/lib/schemas";
-import type { StudentListItem } from "@/lib/server/services/admin";
+import type { StudentListItem, SubjectListItem } from "@/lib/server/services/admin";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,13 @@ const SEMESTER_OPTIONS = Array.from({ length: 8 }, (_, i) => ({
   label: `Semester ${i + 1}`,
 }));
 
-export function StudentForm({ initial }: { initial?: StudentListItem }) {
+export function StudentForm({
+  initial,
+  subjects,
+}: {
+  initial?: StudentListItem;
+  subjects: Pick<SubjectListItem, "id" | "code" | "name" | "semester" | "department">[];
+}) {
   const router = useRouter();
   const editing = Boolean(initial);
 
@@ -26,6 +32,9 @@ export function StudentForm({ initial }: { initial?: StudentListItem }) {
   const [semester, setSemester] = useState(String(initial?.semester ?? 1));
   const [department, setDepartment] = useState(initial?.department ?? "");
   const [batch, setBatch] = useState(initial?.batch ?? "");
+  const [subjectIds, setSubjectIds] = useState<string[]>(
+    initial?.subjects.map((subject) => subject.subjectId) ?? []
+  );
   const [status, setStatus] = useState<"ACTIVE" | "INACTIVE">(initial?.status ?? "ACTIVE");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
@@ -57,6 +66,7 @@ export function StudentForm({ initial }: { initial?: StudentListItem }) {
       semester,
       department,
       batch,
+      subjectIds,
     });
     if (!parsed.success) {
       const flat: Record<string, string> = {};
@@ -156,6 +166,7 @@ export function StudentForm({ initial }: { initial?: StudentListItem }) {
           onChange={(e) => setName(e.target.value)}
           error={fieldErrors.name}
         />
+
         <Input
           label="Email"
           type="email"
@@ -211,6 +222,40 @@ export function StudentForm({ initial }: { initial?: StudentListItem }) {
         error={fieldErrors.batch}
         helperText="Optional — shown to faculty to group the same cohort."
       />
+
+      <fieldset className="space-y-2">
+        <legend className="text-sm font-medium text-slate-900">Assigned subjects</legend>
+        <p className="text-xs text-surface-500">
+          Faculty will only see this student when creating a session for one of these subjects.
+        </p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {subjects.map((subject) => (
+            <label
+              key={subject.id}
+              className="flex items-start gap-2 rounded-md border border-surface-200 px-3 py-2 text-sm"
+            >
+              <input
+                type="checkbox"
+                checked={subjectIds.includes(subject.id)}
+                onChange={(event) =>
+                  setSubjectIds((current) =>
+                    event.target.checked
+                      ? [...current, subject.id]
+                      : current.filter((id) => id !== subject.id)
+                  )
+                }
+              />
+              <span>
+                <span className="font-medium text-slate-900">{subject.code}</span>
+                <span className="ml-1 text-surface-500">{subject.name}</span>
+                <span className="block text-xs text-surface-400">
+                  Semester {subject.semester} · {subject.department}
+                </span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       {editing && (
         <div className="w-full sm:w-56">

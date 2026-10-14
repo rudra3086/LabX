@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     if (!parsed.success) {
       throw new ApiError("Validation failed.", 422, "VALIDATION_ERROR", zodFieldErrors(parsed.error));
     }
-    const { studentId, rollNumber, name, email, semester, department, batch } = parsed.data;
+    const { studentId, rollNumber, name, email, semester, department, batch, subjectIds } = parsed.data;
     const tempPassword = generateTempPassword();
 
     try {
@@ -43,7 +43,17 @@ export async function POST(req: Request) {
           },
         });
         return tx.student.create({
-          data: { userId: user.id, studentId, rollNumber, semester, department, batch },
+          data: {
+            userId: user.id,
+            studentId,
+            rollNumber,
+            semester,
+            department,
+            batch,
+            subjectLinks: {
+              create: subjectIds.map((subjectId) => ({ subjectId })),
+            },
+          },
         });
       });
 

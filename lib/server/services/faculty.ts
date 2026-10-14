@@ -223,6 +223,7 @@ export async function getEnrollableStudents(
     where: {
       status: "ACTIVE",
       user: { status: "ACTIVE" },
+      subjectLinks: { some: { subjectId: session.subjectId } },
       batch: session.batch ? session.batch : { not: null },
       NOT: { sessionLinks: { some: { sessionId } } },
     },
@@ -412,6 +413,7 @@ export interface TaskSubmissionRow {
   rollNumber: string;
   name: string;
   email: string;
+  batch: string | null;
   submissionId: string | null;
   status: SubmissionStatus;
   submittedAt: string | null;
@@ -478,6 +480,7 @@ export async function getTaskSubmissions(
       rollNumber: student.rollNumber,
       name: student.user.name,
       email: student.user.email,
+      batch: student.batch,
       submissionId: sub?.id ?? null,
       status: sub?.status ?? "NOT_STARTED",
       submittedAt: sub?.submittedAt ? sub.submittedAt.toISOString() : null,
