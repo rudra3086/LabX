@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, Pencil, CircleAlert, KeyRound } from "lucide-react";
+import { Search, Pencil, CircleAlert, KeyRound, Power, Loader2 } from "lucide-react";
 import type { StudentListItem } from "@/lib/server/services/admin";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -255,26 +255,36 @@ export function StudentsList({ items }: { items: StudentListItem[] }) {
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-8 w-8 p-0"
                       onClick={() => void setStatusFor(s, s.status === "ACTIVE" ? "INACTIVE" : "ACTIVE")}
                       disabled={busyId === s.id}
+                      aria-label={`${s.status === "ACTIVE" ? "Deactivate" : "Activate"} ${s.name}`}
+                      title={s.status === "ACTIVE" ? "Deactivate" : "Activate"}
                     >
-                      {busyId === s.id ? "Working…" : s.status === "ACTIVE" ? "Deactivate" : "Activate"}
+                      {busyId === s.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+                      ) : (
+                        <Power className="h-3.5 w-3.5" aria-hidden="true" />
+                      )}
                     </Button>
                     <Link
                       href={`/admin/students/${s.id}/edit`}
                       aria-label={`Edit ${s.name}`}
-                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
+                      title="Edit"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-md text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
                     >
-                      <Pencil className="h-3.5 w-3.5" /> Edit
+                      <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
                     </Link>
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-8 w-8 p-0"
                       onClick={() => setResetting(s)}
                       disabled={busyId === s.id}
                       aria-label={`Reset password for ${s.name}`}
+                      title="Reset password"
                     >
-                      <KeyRound className="h-3.5 w-3.5" /> Password
+                      <KeyRound className="h-3.5 w-3.5" aria-hidden="true" />
                     </Button>
                   </div>
                 </TableCell>

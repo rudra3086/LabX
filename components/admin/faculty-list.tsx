@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, Pencil, Trash2, CircleAlert, KeyRound } from "lucide-react";
+import { Search, Pencil, Trash2, CircleAlert, KeyRound, Power, Loader2 } from "lucide-react";
 import type { FacultyListItem } from "@/lib/server/services/admin";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -191,36 +191,47 @@ export function FacultyList({ items }: { items: FacultyListItem[] }) {
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-8 w-8 p-0"
                       onClick={() => void setStatusFor(f, f.status === "ACTIVE" ? "INACTIVE" : "ACTIVE")}
                       disabled={busyId === f.id}
+                      aria-label={`${f.status === "ACTIVE" ? "Deactivate" : "Activate"} ${f.name}`}
+                      title={f.status === "ACTIVE" ? "Deactivate" : "Activate"}
                     >
-                      {busyId === f.id ? "Working…" : f.status === "ACTIVE" ? "Deactivate" : "Activate"}
+                      {busyId === f.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+                      ) : (
+                        <Power className="h-3.5 w-3.5" aria-hidden="true" />
+                      )}
                     </Button>
                     <Link
                       href={`/admin/faculty/${f.id}/edit`}
                       aria-label={`Edit ${f.name}`}
-                      className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
+                      title="Edit"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-md text-surface-600 transition-colors hover:bg-surface-100 hover:text-slate-900"
                     >
-                      <Pencil className="h-3.5 w-3.5" /> Edit
+                      <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
                     </Link>
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-8 w-8 p-0"
                       onClick={() => setResetting(f)}
                       disabled={busyId === f.id}
                       aria-label={`Reset password for ${f.name}`}
+                      title="Reset password"
                     >
-                      <KeyRound className="h-3.5 w-3.5" /> Password
+                      <KeyRound className="h-3.5 w-3.5" aria-hidden="true" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-rose-600 hover:bg-rose-50 hover:text-rose-700"
+                      className="h-8 w-8 p-0 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
                       onClick={() => setDeleting(f)}
                       disabled={busyId === f.id}
                       aria-label={`Delete ${f.name}`}
+                      title="Delete"
                     >
-                      <Trash2 className="h-3.5 w-3.5" /> Delete
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                     </Button>
                   </div>
                 </TableCell>

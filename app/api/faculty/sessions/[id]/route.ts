@@ -3,6 +3,7 @@ import { ApiError, handleApiError, jsonSuccess } from "@/lib/server/http";
 import { prisma } from "@/lib/server/prisma";
 import { recordAudit } from "@/lib/server/audit";
 import { sessionPatchSchema, zodFieldErrors } from "@/lib/schemas";
+import { getTodayDateInput } from "@/lib/date";
 import {
   assertSessionOwnership,
   getFacultySessionDetail,
@@ -49,6 +50,23 @@ export async function PATCH(req: Request, { params }: Ctx) {
       throw new ApiError("Validation failed.", 422, "VALIDATION_ERROR", zodFieldErrors(parsed.error));
     }
     const p = parsed.data;
+    const effectiveStartDate = p.startDate !== undefined
+      ? p.startDate
+      : existing.startDate?.toISOString().slice(0, 10) ?? null;
+    const effectiveEndDate = p.endDate !== undefined
+      ? p.endDate
+      : existing.endDate?.toISOString().slice(0, 10) ?? null;
+
+    if (effectiveStartDate && effectiveEndDate && effectiveEndDate < effectiveStartDate) {
+      throw new ApiError("End date must be on or after the start date.", 422, "VALIDATION_ERROR", {
+        endDate: ["End date must be on or after the start date."],
+      });
+    }
+    if (effectiveEndDate && effectiveEndDate < getTodayDateInput()) {
+      throw new ApiError("End date cannot be in the past.", 422, "VALIDATION_ERROR", {
+        endDate: ["End date cannot be in the past."],
+      });
+    }
 
     // Validate subject change stays within assigned subjects.
     if (p.subjectId !== undefined && p.subjectId !== existing.subjectId) {

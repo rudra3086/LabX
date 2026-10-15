@@ -90,12 +90,14 @@ export function FacultyStudentsView({
                     </td>
                     <td className="py-3 px-4 text-right">
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
+                        className="h-8 w-8 p-0"
                         onClick={() => setSelectedStudentId(s.id)}
+                        aria-label={`View monthly report for ${s.name}`}
+                        title="Monthly Report"
                       >
-                        <Eye className="mr-1.5 h-3.5 w-3.5" />
-                        Monthly Report
+                        <Eye className="h-3.5 w-3.5" aria-hidden="true" />
                       </Button>
                     </td>
                   </tr>

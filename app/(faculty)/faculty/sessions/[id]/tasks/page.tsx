@@ -42,6 +42,7 @@ export default async function SessionTasksPage({
         />
         <SessionTabs sessionId={session.id} />
         <SessionTasks
+          sessionId={session.id}
           tasks={tasks}
           sessionStatus={session.status}
           enrolledCount={session.studentCount}

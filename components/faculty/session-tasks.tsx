@@ -38,10 +38,12 @@ const TASK_STATUS: Record<
 };
 
 export function SessionTasks({
+  sessionId,
   tasks,
   sessionStatus,
   enrolledCount,
 }: {
+  sessionId: string;
   tasks: SessionTaskRow[];
   sessionStatus: "DRAFT" | "ACTIVE" | "COMPLETED" | "ARCHIVED";
   enrolledCount: number;
@@ -88,6 +90,19 @@ export function SessionTasks({
         <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
           This session is {sessionStatus.toLowerCase()}. Tasks can be prepared as
           drafts, but they can only be published once the session is active.
+        </p>
+      )}
+      {enrolledCount === 0 && (
+        <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          No students are enrolled in this session, so tasks will not appear for
+          any student yet.{" "}
+          <Link
+            href={`/faculty/sessions/${sessionId}/students`}
+            className="font-semibold underline underline-offset-2"
+          >
+            Manage the session roster
+          </Link>
+          .
         </p>
       )}
 

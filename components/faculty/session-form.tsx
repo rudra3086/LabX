@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CircleAlert } from "lucide-react";
 import { sessionUpsertSchema, zodFieldErrors } from "@/lib/schemas";
+import { getTodayDateInput } from "@/lib/date";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
@@ -207,6 +208,7 @@ export function SessionForm({
           type="date"
           label="End date"
           value={endDate}
+          min={getTodayDateInput()}
           onChange={(e) => setEndDate(e.target.value)}
           error={fieldErrors.endDate}
         />

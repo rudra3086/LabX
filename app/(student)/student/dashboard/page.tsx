@@ -8,6 +8,7 @@ import {
   FileText,
   Trophy,
 } from "lucide-react";
+import Link from "next/link";
 import { getCurrentUser } from "@/lib/server/rbac";
 import { getStudentDashboardStats } from "@/lib/server/services/dashboard";
 import { StatCard } from "@/components/ui/stat-card";
@@ -88,37 +89,44 @@ export default async function StudentDashboardPage() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {stats.upcoming.map((task) => (
-              <Card key={task.taskId}>
-                <CardHeader>
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <CardTitle className="truncate text-lg">
-                        {task.title}
-                      </CardTitle>
-                      <CardDescription className="mt-1 text-base">
-                        {task.subjectCode} · {task.subjectName} · {task.sessionName}
-                      </CardDescription>
+              <Link
+                key={task.taskId}
+                href={`/student/tasks/${task.taskId}`}
+                className="block rounded-fluentLg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-600 focus-visible:ring-offset-2"
+                aria-label={`Open task ${task.title}`}
+              >
+                <Card className="h-full transition-colors hover:border-navy-200 hover:bg-navy-50/30">
+                  <CardHeader>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <CardTitle className="truncate text-lg">
+                          {task.title}
+                        </CardTitle>
+                        <CardDescription className="mt-1 text-base">
+                          {task.subjectCode} · {task.subjectName} · {task.sessionName}
+                        </CardDescription>
+                      </div>
+                      <StatusBadge status={task.viewStatus} />
                     </div>
-                    <StatusBadge status={task.viewStatus} />
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm">
-                  <div className="flex items-center justify-between text-surface-600">
-                    <span>Maximum marks</span>
-                    <span className="font-medium tabular-nums text-slate-900">{task.maximumMarks}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-surface-600">
-                    <span>Deadline</span>
-                    <span className="font-medium text-slate-900">
-                      {task.deadline ? formatIST(task.deadline) : "No deadline"}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between border-t border-surface-100 pt-2.5 text-xs text-surface-400">
-                    <span>{formatRelativeDeadline(task.deadline)}</span>
-                    {task.submissionStatus === "DRAFT" && <Badge variant="slate" size="sm">Draft saved</Badge>}
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    <div className="flex items-center justify-between text-surface-600">
+                      <span>Maximum marks</span>
+                      <span className="font-medium tabular-nums text-slate-900">{task.maximumMarks}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-surface-600">
+                      <span>Deadline</span>
+                      <span className="font-medium text-slate-900">
+                        {task.deadline ? formatIST(task.deadline) : "No deadline"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between border-t border-surface-100 pt-2.5 text-xs text-surface-400">
+                      <span>{formatRelativeDeadline(task.deadline)}</span>
+                      {task.submissionStatus === "DRAFT" && <Badge variant="slate" size="sm">Draft saved</Badge>}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         )}

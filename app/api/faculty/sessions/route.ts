@@ -4,6 +4,7 @@ import { prisma } from "@/lib/server/prisma";
 import { recordAudit } from "@/lib/server/audit";
 import { sessionUpsertSchema, zodFieldErrors } from "@/lib/schemas";
 import { getFacultySessionDetail, getFacultySessions } from "@/lib/server/services/faculty";
+import { getTodayDateInput } from "@/lib/date";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,11 @@ export async function POST(req: Request) {
       throw new ApiError("Validation failed.", 422, "VALIDATION_ERROR", zodFieldErrors(parsed.error));
     }
     const { subjectId, name, description, semester, batch, startDate, endDate } = parsed.data;
+    if (endDate && endDate < getTodayDateInput()) {
+      throw new ApiError("End date cannot be in the past.", 422, "VALIDATION_ERROR", {
+        endDate: ["End date cannot be in the past."],
+      });
+    }
 
     const assigned = await prisma.facultySubject.findFirst({
       where: { facultyId, subjectId },

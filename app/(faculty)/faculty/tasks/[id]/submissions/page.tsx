@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CircleAlert } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { getCurrentUser } from "@/lib/server/rbac";
 import { getTaskSubmissions } from "@/lib/server/services/faculty";
@@ -55,6 +56,23 @@ export default async function TaskSubmissionsPage({
         <StatCard title="Graded" value={counts.graded} />
         <StatCard title="Ungraded" value={counts.ungraded} />
       </div>
+
+      {counts.enrolled === 0 && (
+        <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" />
+          <p>
+            No students are enrolled in this task&apos;s session, so there are no
+            submission rows to display.{" "}
+            <Link
+              href={`/faculty/sessions/${task.sessionId}/students`}
+              className="font-semibold underline underline-offset-2"
+            >
+              Manage the session roster
+            </Link>
+            .
+          </p>
+        </div>
+      )}
 
       <Card>
         <CardContent>

@@ -2,6 +2,17 @@ import { SubmissionStatus, TaskStatus, TaskViewStatus } from "@/types";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+export function getTodayDateInput(timeZone = "Asia/Kolkata"): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
 /**
  * Derive the user-facing task view status (spec §20, §32) entirely from real
  * stored data. Never invents a submission.

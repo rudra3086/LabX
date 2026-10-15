@@ -431,10 +431,12 @@ export function ClassReportView({
                           <Button
                             variant="ghost"
                             size="sm"
+                            className="h-8 w-8 p-0"
                             onClick={() => setSelectedStudentId(s.studentId)}
+                            aria-label={`View monthly report for ${s.name}`}
+                            title="Monthly Report"
                           >
-                            <Eye className="mr-1 h-3.5 w-3.5" />
-                            Report
+                            <Eye className="h-3.5 w-3.5" aria-hidden="true" />
                           </Button>
                         </td>
                       </tr>

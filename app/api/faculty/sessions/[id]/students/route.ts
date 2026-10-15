@@ -11,6 +11,7 @@ import {
 export const dynamic = "force-dynamic";
 
 type Ctx = { params: { id: string } };
+const NO_BATCH = "__NO_BATCH__";
 
 export async function GET(_req: Request, { params }: Ctx) {
   try {
@@ -49,9 +50,20 @@ export async function POST(req: Request, { params }: Ctx) {
     }
 
     // Enroll all existing active students from the selected batches.
+    const selectedBatches = batchNames.filter((batch) => batch !== NO_BATCH);
+    const includeStudentsWithoutBatch = batchNames.includes(NO_BATCH);
+    const batchFilter =
+      selectedBatches.length > 0 || includeStudentsWithoutBatch
+        ? {
+            OR: [
+              ...(selectedBatches.length > 0 ? [{ batch: { in: selectedBatches } }] : []),
+              ...(includeStudentsWithoutBatch ? [{ batch: null }] : []),
+            ],
+          }
+        : {};
     const students = await prisma.student.findMany({
       where: {
-        batch: { in: batchNames },
+        ...batchFilter,
         status: "ACTIVE",
         user: { status: "ACTIVE" },
         subjectLinks: { some: { subjectId: session.subjectId } },

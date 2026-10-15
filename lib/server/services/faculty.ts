@@ -213,7 +213,7 @@ export async function getSessionStudents(
   }));
 }
 
-/** Active students who are not yet enrolled in the session (candidates to add). */
+/** Active students enrolled in the session subject who are not yet in the session. */
 export async function getEnrollableStudents(
   facultyId: string,
   sessionId: string
@@ -224,7 +224,7 @@ export async function getEnrollableStudents(
       status: "ACTIVE",
       user: { status: "ACTIVE" },
       subjectLinks: { some: { subjectId: session.subjectId } },
-      batch: session.batch ? session.batch : { not: null },
+      ...(session.batch ? { batch: session.batch } : {}),
       NOT: { sessionLinks: { some: { sessionId } } },
     },
     include: { user: { select: { name: true, email: true } } },

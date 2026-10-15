@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty-state";
 
+const NO_BATCH = "__NO_BATCH__";
+
 export function SessionRoster({
   sessionId,
   initialStudents,
@@ -49,7 +51,9 @@ export function SessionRoster({
 
   const batches = useMemo(
     () =>
-      Array.from(new Set(candidates.map((candidate) => candidate.batch).filter(Boolean) as string[])).sort(),
+      Array.from(
+        new Set(candidates.map((candidate) => candidate.batch ?? NO_BATCH))
+      ).sort(),
     [candidates]
   );
 
@@ -225,11 +229,15 @@ export function SessionRoster({
                   .filter(
                       (batch) =>
                         batch.toLowerCase().includes(search.trim().toLowerCase()) ||
-                        filteredCandidates.some((candidate) => candidate.batch === batch)
+                        filteredCandidates.some(
+                          (candidate) => (candidate.batch ?? NO_BATCH) === batch
+                        )
                   )
                   .map((batch) => {
                       const checked = selectedBatches.has(batch);
-                      const count = candidates.filter((candidate) => candidate.batch === batch).length;
+                      const count = candidates.filter(
+                        (candidate) => (candidate.batch ?? NO_BATCH) === batch
+                      ).length;
                       return (
                         <li key={batch}>
                           <label className="flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-surface-50">
@@ -239,7 +247,9 @@ export function SessionRoster({
                               onChange={() => toggleBatch(batch)}
                               className="h-4 w-4 rounded border-surface-300 text-navy-700 focus:ring-navy-600"
                             />
-                            <span className="font-medium text-slate-800">Batch {batch}</span>
+                            <span className="font-medium text-slate-800">
+                              {batch === NO_BATCH ? "Students without a batch" : `Batch ${batch}`}
+                            </span>
                             <Badge variant="slate" size="sm" className="ml-auto">
                               {count} student{count === 1 ? "" : "s"}
                             </Badge>
